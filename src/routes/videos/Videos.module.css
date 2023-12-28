@@ -1,0 +1,15 @@
+.videosContainer{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 25px;
+    width: 100%;
+    gap: 25px
+}
+.videosContainer video{
+    width:200px;
+}
+.videosContainer * {
+    text-align: center;
+}

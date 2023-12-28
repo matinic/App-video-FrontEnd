@@ -1,0 +1,32 @@
+
+.profileImage{
+    width:80px;
+    height: 80px;
+    background: red;
+}
+.uploadImage input{
+    display: none;
+}
+fieldset { 
+    display: flex;
+    flex-direction: column;
+    padding: 20px
+}
+.viewToken{
+    display: flex;
+    flex-direction: column;
+    color: white;
+    border: 1px solid white;
+    width: 800px;
+    height: 400px;
+}
+.viewToken a{
+    margin: 0px 10px 0px;
+    word-wrap: break-word;
+    height: auto;
+    cursor: pointer;
+}
+.error{
+    height: 40px;
+    color: white;
+}

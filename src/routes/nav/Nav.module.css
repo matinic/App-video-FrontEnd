@@ -1,0 +1,49 @@
+.nav{
+    width: 100%;
+    height: 80px;
+    background-color: red;
+    display: flex;
+    align-items: center;
+}
+.userProfile{
+    display: flex;
+    justify-content: end;
+    height: 40px;
+    margin: 0px 10px 0px;
+    gap: 10px;
+}
+.userProfile p{
+    padding: 0px;
+    margin: 0px 10px 0px;
+    display: flex;
+    align-items: center;
+
+}
+.navContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 20px 0px 20px;
+    flex-grow: 1;
+}
+.nav button{
+    height: max-content;
+    margin: 0px;
+}
+h1{
+    margin: 0px;
+}
+h1:hover{
+    cursor: pointer
+}
+.selected{
+    background-color: grey;
+}
+.profileSocket{
+    display: flex;
+}
+.profileSocket:hover{
+    cursor: pointer;
+    background-color: lightcoral;
+    border-radius: 5px;
+}

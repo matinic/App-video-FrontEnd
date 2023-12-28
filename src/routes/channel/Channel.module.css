@@ -1,0 +1,16 @@
+.profileImage{
+    height: 100px;
+}
+.profileChannel{
+    display: flex;
+    gap: 25px;
+    padding: 25px;
+    background-color: black;
+    border-radius: 20px;
+    width: max-content;
+}
+.channelVideos{
+    gap:10px;
+    display: flex;
+    flex-wrap: wrap;
+}

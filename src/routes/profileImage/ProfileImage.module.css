@@ -1,0 +1,64 @@
+.modalBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 100vw;
+    height: 100%
+}
+.modalContainer{
+    margin-top: 50vh; 
+    margin-left: 50vw;
+    transform: translate(-50%,-50%);
+    border-radius: 10px;
+    background-color: black;
+    width: 300px;
+    height: 250px;
+    padding: 40px;
+    flex-direction: column;
+    display: flex;
+}
+.buttonsContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    width: 100%;
+    flex-grow: 1;
+}
+.buttonsContainer button{
+    font-size: 1em;
+    padding: 6px;
+    height: max-content;
+    width: max-content;
+}
+.modalImageContainer{
+    border: 1px rgb(255, 255, 255) solid;
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+.modalImageContainer img{
+    position: absolute;
+    cursor:grab;
+}
+.circle{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 200px;
+    height: 200px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 50%;
+    pointer-events: none;
+}
+.backgroundMask{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+    background-color: rgb(255, 255, 255);
+    -webkit-mask-image: radial-gradient(circle,  rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, 0.715) 56%);
+    mask-image: radial-gradient(circle,  rgba(0, 0, 0, 0) 56%, rgba(0, 0, 0, 0.394) 56%);
+
+}

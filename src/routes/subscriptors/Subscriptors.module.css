@@ -1,0 +1,28 @@
+.modalBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 100vw;
+    height: 100%
+}
+.modalContainer{
+    margin-top: 50vh; 
+    margin-left: 50vw;
+    transform: translate(-50%,-50%);
+    border-radius: 10px;
+    background-color: black;
+    width: 250px;
+    height: 400px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    overflow: scroll;
+}
+.modalContainer h3{
+    margin: 0px;
+}
+.modalContainer button{
+    width: max-content;
+}

@@ -1,0 +1,8 @@
+.formBody{
+    border-color: white solid 1px
+}
+.formBody fieldset{
+    display: flex;
+    flex-direction: column;
+    gap: 15px
+}

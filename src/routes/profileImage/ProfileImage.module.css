@@ -40,6 +40,7 @@
 .modalImageContainer img{
     position: absolute;
     cursor:grab;
+    display: none
 }
 .circle{
     position: absolute;

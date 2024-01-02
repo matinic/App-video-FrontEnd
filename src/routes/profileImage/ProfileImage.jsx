@@ -1,16 +1,21 @@
 import style from "./ProfileImage.module.css"
 import {useEffect, useRef, useState} from "react"
-import useCloudinarySignature from "../../hooks/useCloudinarySignature"
+import useSignCloudinaryParameters from "../../hooks/useSignCloudinaryParmeters"
 import useUploadImage from "../../hooks/useUploadImage"
+import useUpdateUserData from "../../hooks/useUpdateUserData"
+import {useQueryClient} from "@tanstack/react-query"
 
-export default function ProfileImage({image,closeModal,reset,setImageFile}){
+
+export default function ProfileImage({image,closeModal,reset,setImageFile,usernameChannel}){
     const profile = useRef()
     const container = useRef()
     const circle = useRef()
     const circleBound = useRef({})
     const imageOffset = useRef({})
     const containerRect = useRef({})
-    useCloudinarySignature()
+
+    //Meididas originales de la imagen 
+    const imageDimensions = useRef()
 
     const [imgPositionX,setImgPositionX] = useState({
         transform: '-50%',
@@ -21,9 +26,18 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
         top: '50%'
     })
     const [imageSize, setImageSize] = useState({
-        height: '100%',
+        height: 'auto',
         width: 'auto'
     })
+
+    //Estado local donde almacenar los parametros que se enviaran a cloudinary
+    const [cloudTransformations,setCloudTransformations] = useState({
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+    })
+
     const zoom = (e)=>{
         getCircleBounds()
         const imageRect = profile.current.getBoundingClientRect()//medidas actuales
@@ -42,17 +56,33 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
             }
         return
     }
-
+    
     const saveCoords = (e)=>{
         e.preventDefault()
         const {positionX,positionY} = imageOffset.current
         const imageRect = profile.current.getBoundingClientRect()
-        // console.log(e.clientX - containerRect.current.x - positionX)
-        const top =  e.clientY - containerRect.current.y - positionY
+        // Se determina la posicion que va a tener la imagen en relacion a la pocion dinamica del puntero del raton
+        const top =  e.clientY - containerRect.current.y - positionY 
         const left = e.clientX - containerRect.current.x - positionX
-        const bottom = top + imageRect.height + 2
+        const bottom = top + imageRect.height 
         const right = left + imageRect.width 
-        //cuando toca el borde izquierdo
+
+        //Ratio de la operacion de dividir el ancho original con la medida del ancho de la imagen redimensionada en la interfaz del navegador
+        const imageRatio = imageDimensions.current.originalWidth / imageRect.width
+        //En la interfaz, margen TOP del circulo dentro de la imagen redimensionada
+        const circleMarginTop = circleBound.current.top - top
+        //Medida real del margen TOP del circulo respecto de la imagen, medida que se pasa como parametro a cloudinary
+        const realMarginTop = circleMarginTop * imageRatio
+        //En la interfaz, margen LEFT del circulo dentro de la imagen redimensionada
+        const circleMarginLeft = circleBound.current.left - left
+        //Medida real del margen LEFT del circulo respecto de la imagen, medida que se pasa como parametro a cloudinary
+        const realMarginLeft = circleMarginLeft * imageRatio
+        //Medidas reales del circulo
+        const realCircleWidth = circleBound.current.width * imageRatio
+        const realCircleHeight = circleBound.current.height * imageRatio
+
+        //Restricciones de moviento cuando el borde de la imagen toca uno de los bordes del circulo
+        //Cuando toca el borde left
         if(circleBound.current.left <= left){
             setImgPositionX({
                 transform: 0,
@@ -62,6 +92,25 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
                 transform: 0,
                 top: top + 'px',
             })
+             //Parametros que se le pasaran a Cloudinary 
+            if(circleBound.current.top <= top){
+                console.log('tocando top y left')
+                setCloudTransformations({
+                    top: 0,
+                    left: 0,
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
+            if(!(circleBound.current.top <= top)){
+                console.log('tocando solo left')
+                setCloudTransformations({
+                    top: Math.floor(realMarginTop),
+                    left: 0,
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
         }
         //cuando tocan borde derecho
         if(circleBound.current.right >= right){
@@ -73,6 +122,25 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
                 transform: 0,
                 top: top + 'px',
             })
+            //Parametros que se le pasaran a Cloudinary
+            if(circleBound.current.top <= top){
+                console.log('tocando top y right')
+                setCloudTransformations({
+                    top: 0,
+                    left: Math.floor(imageDimensions.current.originalWidth - realCircleWidth),
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
+            if(!(circleBound.current.top <= top)){
+                console.log('tocando solo right')
+                setCloudTransformations({
+                    top: Math.floor(realMarginTop),
+                    left: Math.floor(imageDimensions.current.originalWidth - realCircleWidth),
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
         }
         //cuando toca borde top
         if(circleBound.current.top <= top){
@@ -85,11 +153,21 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
                     transform: 0,
                     left: left + 'px',
                 })
+                console.log('tocando solo top')
+                setCloudTransformations({
+                    top: 0,
+                    left:  Math.floor(realMarginLeft),
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
             }
+            
             setImgPositionY({
                 transform: 0,
-                top:  circleBound.current.top + 'px',
+                top:  circleBound.current.top - 1 + 'px',
             })
+            //Parametros que se le pasaran a Cloudinary
+ 
         }
         //cuando toca borde bottom
         if(circleBound.current.bottom >= bottom){
@@ -100,12 +178,12 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
             ){
                 setImgPositionX({
                     transform: 0,
-                    left: left + 'px',
+                    left: left - 1 + 'px',
                 })
             }
             setImgPositionY({
                 transform: 0,
-                top:  circleBound.current.bottom - imageRect.height - 2 + 'px',
+                top:  circleBound.current.bottom - imageRect.height + 'px',
             })
         }
         //cuando no toca ningun borde y se mueve libremente
@@ -126,9 +204,18 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
                     transform: 0,
                     top: top + 'px',
             })
+            setCloudTransformations({
+                top: Math.floor(realMarginTop),
+                left: Math.floor(realMarginLeft),
+                width: Math.floor(realCircleWidth),
+                height: Math.floor(realCircleHeight)
+            })
         }
         return 
     }
+
+    console.log(cloudTransformations)
+
     const getCircleBounds = ()=>{
         const circleRect = circle.current.getBoundingClientRect()
         const containerData = container.current.getBoundingClientRect()
@@ -161,41 +248,113 @@ export default function ProfileImage({image,closeModal,reset,setImageFile}){
         document.body.style.cursor = 'auto'
         document.onmousemove = null
     }
-    //Funcion para redimensionar imagen durante el renderiizado inicial
+
+    //Funcion para redimensiona imagen despues del renderiizado inicial
     const [redimention,setRedimention] = useState(true)
     useEffect(()=>{
         if(redimention){
-            console.log('redimensionando imagen')
             getCircleBounds()
+   
             const imageRatio = profile.current.width / profile.current.height
             let width, height
+
+            //Si la imagen es mas alta que la medida del contenedor
             if (imageRatio <= 1) {
                 width = circleBound.current.width;
-                height = circleBound.current.width / imageRatio;
-            } else {
-                width = circleBound.current.height * imageRatio;
+                height = Math.floor(circleBound.current.width / imageRatio);
+                //Seteo del verdadero estado inicial
+                setCloudTransformations({
+                    top: Math.floor((profile.current.height - profile.current.width) / 2),
+                    left: 0,
+                    width: profile.current.width,
+                    height:  profile.current.width, 
+                })
+            }
+            //Si la imagen es mas ancha se guardan los parame
+            else {
+                width = Math.floor(circleBound.current.height * imageRatio);
                 height = circleBound.current.height;
+                 //Seteo del verdadero estado inicial
+                setCloudTransformations({
+                    top:  0,
+                    left: Math.floor((profile.current.width - profile.current.height) / 2),
+                    width: profile.current.height,
+                    height: profile.current.height, 
+                })
+            }
+            imageDimensions.current = {
+                originalWidth: profile.current.width,
+                originalHeight: profile.current.heigth,
             }
             setImageSize({
                 height: height +'px',
                 width: width + 'px'
             })
+            profile.current.style.display = 'block'
             setRedimention(false)
         }
     },[])
 
+    //Hook que se encarga de la subida de la imagen a la API de Cloudinary
     const {mutate:mutateUploadImage} = useUploadImage()
+
+    //Hook que se encarga de retribuir la firma del backend para poder subir los archivos a Cloudinary
+    const {mutate:mutateBackSign} = useSignCloudinaryParameters()
+
+    //Hook que envia la informacion necesaria para actualizar el estado del usuario en el servidor 
+    const {mutate:mutateUpdateUserData} = useUpdateUserData(usernameChannel)
+
+    const queryClient = useQueryClient()
+
     const acceptAndUploadToCloudinary = ()=>{
-        mutateUploadImage(image,{
-            onSuccess: (a,b,c)=>{ 
-                console.log('archivo subido exitosamente a cloudinary')
-                console.log(a)
-                console.log(b)
-                console.log(c)
+      
+        mutateBackSign({
+            eager:
+            `c_crop,h_${cloudTransformations.height},` +
+            `w_${cloudTransformations.width},` + 
+            `x_${cloudTransformations.left},` +
+            `y_${cloudTransformations.top}/` +
+            `ar_1.0,`+
+            `h_100,` +
+            `r_max,` +
+            `f_auto/`,
+            folder: 'user_profile_images',
+            public_id: queryClient.getQueryData(['user']).data.username //Nombre del usurio guardado en caché
+        },{
+            //Funcion que se ejecuta en caso de que la obtencion de la firma desde el backedn haya sido exitosa
+            onSuccess: (data,params)=>{
+                //En caso de que todo haya salido bien se ejecuta la mutacion que se encarga de la subida de la iamgen a Cloudinary
+                mutateUploadImage({
+                    body: image,
+                    data,
+                    params
+                },{
+                    //Fucion que se ejecuta en caso de que la subida de la imagen a Cloudinary haya salido bien
+                    onSuccess: (data)=>{
+                        //se cierra la ventana del modal
+                        closeModal(false)
+                        //llamamos a la mutacion que actualiza el estado del usuario en el servidor
+                        mutateUpdateUserData({
+                            image: data.data.eager[0].url
+                        },{
+                            //Funcion que se ejecuta en caso de que la actualizacion del estado del usuario haya ssalido mal
+                            onError: (error)=>{
+                                alert('Something went wrong [2]' + ' ' + error)
+                            }
+                        })
+                    },
+                    //Funcion que se ejecuta en caso de que la subida de la imagen a Cloudinary haya salido mal
+                    onError: (error)=>{
+                        alert('Something went wrong [1]' + ' ' + error)
+                    }
+                })
+            },
+            //Error en caso de que algo salga mal al obtener la firma
+            onError: (error)=>{
+                alert('Something went wrong [0]' + ' ' + error)
             }
         })
     }
-
     return (    
         <div className={style.modalBackground}>
             <div className={style.modalContainer}>

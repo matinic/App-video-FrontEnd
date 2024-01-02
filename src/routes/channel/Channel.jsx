@@ -72,7 +72,7 @@ export default function Channel() {
             <img
                 src={channelInfo?.image || imageDefault}
                 className={style.profileImage}
-                onClick={() => inputFile.current.click()}
+                onClick={channelInfo?.username === userLogged?.username ? () => inputFile.current.click() : null}
             />
             <form onChange={loadImage} ref={formImage} style={{display: 'none'}}>
                 <input type="file" ref={inputFile}  />
@@ -98,8 +98,8 @@ export default function Channel() {
 
         {/* {Modal Profile Image change} */}
 
-        {
-          modalProfileImg &&  createPortal(<ProfileImage closeModal={setModalProfileImg} image={imageFile} reset={resetForm()} setImageFile={setImageFile}/>,document.body)
+        {  
+            modalProfileImg && createPortal(<ProfileImage closeModal={setModalProfileImg} image={imageFile} reset={resetForm()} setImageFile={setImageFile} usernameChannel={params.username}/>,document.body)
         }
 
         {/* Channel Videos */}

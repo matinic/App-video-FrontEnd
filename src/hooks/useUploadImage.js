@@ -7,15 +7,15 @@ const API_KEY= '566932643731173'
 
 export default function useUploadImage(){
 
-    const queryClient = useQueryClient()
-    
-    return useMutation((body)=>{
-        const cloud = queryClient.getQueryData(['signature'])
+    return useMutation(({body,data,params})=>{
+ 
         const config = {
             file: body,
-            folder: "user_profile_image"
+            ...params
         }
-        const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload?api_key=${API_KEY}&timestamp=${cloud.data.timestamp}&signature=${cloud.data.signature}`
+        const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload?api_key=${API_KEY}&timestamp=${data.data.timestamp}&signature=${data.data.signature}`
         return axios.post(url,config)
     })
 }
+
+ 

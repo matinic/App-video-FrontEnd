@@ -5,7 +5,6 @@ import useUploadImage from "../../hooks/useUploadImage"
 import useUpdateUserData from "../../hooks/useUpdateUserData"
 import {useQueryClient} from "@tanstack/react-query"
 
-
 export default function ProfileImage({image,closeModal,reset,setImageFile,usernameChannel}){
     const profile = useRef()
     const container = useRef()
@@ -13,10 +12,8 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
     const circleBound = useRef({})
     const imageOffset = useRef({})
     const containerRect = useRef({})
-
     //Meididas originales de la imagen 
     const imageDimensions = useRef()
-
     const [imgPositionX,setImgPositionX] = useState({
         transform: '-50%',
         left: '50%'
@@ -29,7 +26,6 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         height: 'auto',
         width: 'auto'
     })
-
     //Estado local donde almacenar los parametros que se enviaran a cloudinary
     const [cloudTransformations,setCloudTransformations] = useState({
         top: 0,
@@ -37,14 +33,13 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         width: 0,
         height: 0,
     })
-
     const zoom = (e)=>{
         getCircleBounds()
         const imageRect = profile.current.getBoundingClientRect()//medidas actuales
         if(e.target.name === "zoomin"){
             setImageSize({
                     height: imageRect.height + 10 + 'px',//heigh futuro
-                    width:'auto',//width futuro
+                    width: 'auto'
                 })
             }
         else if(e.target.name === "zoomout"){
@@ -56,6 +51,29 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             }
         return
     }
+    useEffect(()=>{
+        const imageRect = profile.current.getBoundingClientRect()//medidas actuales
+        //Posicion de la imagen respecto del contenedor sin mover con el mouse
+        // const topStatic = imageRect.top - containerRect.current.top
+        // const leftStatic = imageRect.left - containerRect.current.left
+        const bottomStatic = imageRect.bottom - containerRect.current.top
+        const rightStatic = imageRect.right - containerRect.current.left
+        //Reposicionamiento en caso de que los bordes de laimagen toquen traspasen los limites del circulo hacia adentro cuando se modifica sus dimensiones
+        if(bottomStatic <= circleBound.current.bottom){
+            // console.log('tocando bottom')
+            setImgPositionY({
+                transform: 0,
+                top: circleBound.current.bottom - imageRect.height - 1 + 'px',
+            })
+        }
+        if(rightStatic <= circleBound.current.right){
+            // console.log('tocando right')
+            setImgPositionX({
+                transform: 0,
+                left: circleBound.current.right - imageRect.width - 1 + 'px',
+            })
+        }
+    },[imageSize])
     
     const saveCoords = (e)=>{
         e.preventDefault()
@@ -94,7 +112,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             })
              //Parametros que se le pasaran a Cloudinary 
             if(circleBound.current.top <= top){
-                console.log('tocando top y left')
+                // console.log('tocando top y left')
                 setCloudTransformations({
                     top: 0,
                     left: 0,
@@ -102,8 +120,21 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                     height: Math.floor(realCircleHeight)
                 })
             }
-            if(!(circleBound.current.top <= top)){
-                console.log('tocando solo left')
+            if(circleBound.current.bottom >= bottom){
+                // console.log('tocando bottom y left')
+                setCloudTransformations({
+                    top: Math.floor(imageDimensions.current.originalHeight - realCircleHeight),
+                    left: 0,
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
+            if(
+                !(circleBound.current.top <= top)
+                &&
+                !(circleBound.current.bottom >= bottom)
+                ){
+                // console.log('tocando solo left')
                 setCloudTransformations({
                     top: Math.floor(realMarginTop),
                     left: 0,
@@ -116,7 +147,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         if(circleBound.current.right >= right){
             setImgPositionX({
                 transform: 0,
-                left: circleBound.current.right - imageRect.width - 1 + 'px',
+                left: circleBound.current.right - imageRect.width + 'px',
             })
             setImgPositionY({
                 transform: 0,
@@ -124,7 +155,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             })
             //Parametros que se le pasaran a Cloudinary
             if(circleBound.current.top <= top){
-                console.log('tocando top y right')
+                // console.log('tocando top y right')
                 setCloudTransformations({
                     top: 0,
                     left: Math.floor(imageDimensions.current.originalWidth - realCircleWidth),
@@ -132,8 +163,21 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                     height: Math.floor(realCircleHeight)
                 })
             }
-            if(!(circleBound.current.top <= top)){
-                console.log('tocando solo right')
+            if(circleBound.current.bottom >= bottom){
+                // console.log('tocando bottom y right')
+                setCloudTransformations({
+                    top: Math.floor(imageDimensions.current.originalHeight - realCircleHeight),
+                    left: Math.floor(imageDimensions.current.originalWidth - realCircleWidth),
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
+                })
+            }
+            if(
+                !(circleBound.current.top <= top)
+                &&
+                !(circleBound.current.bottom >= bottom)
+            ){
+                // console.log('tocando solo right')
                 setCloudTransformations({
                     top: Math.floor(realMarginTop),
                     left: Math.floor(imageDimensions.current.originalWidth - realCircleWidth),
@@ -153,21 +197,18 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                     transform: 0,
                     left: left + 'px',
                 })
-                console.log('tocando solo top')
+                // console.log('tocando solo top')
                 setCloudTransformations({
                     top: 0,
                     left:  Math.floor(realMarginLeft),
                     width: Math.floor(realCircleWidth),
                     height: Math.floor(realCircleHeight)
                 })
-            }
-            
+            }   
             setImgPositionY({
                 transform: 0,
-                top:  circleBound.current.top - 1 + 'px',
+                top:  circleBound.current.top + 'px',
             })
-            //Parametros que se le pasaran a Cloudinary
- 
         }
         //cuando toca borde bottom
         if(circleBound.current.bottom >= bottom){
@@ -178,7 +219,14 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             ){
                 setImgPositionX({
                     transform: 0,
-                    left: left - 1 + 'px',
+                    left: left + 'px',
+                })
+                // console.log('tocando solo bottom')
+                setCloudTransformations({
+                    top: Math.floor(imageDimensions.current.originalHeight - realCircleHeight),
+                    left:  Math.floor(realMarginLeft),
+                    width: Math.floor(realCircleWidth),
+                    height: Math.floor(realCircleHeight)
                 })
             }
             setImgPositionY({
@@ -213,9 +261,6 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         }
         return 
     }
-
-    console.log(cloudTransformations)
-
     const getCircleBounds = ()=>{
         const circleRect = circle.current.getBoundingClientRect()
         const containerData = container.current.getBoundingClientRect()
@@ -230,8 +275,6 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         containerRect.current = containerData
     }
     const grabImage = (e)=>{
-        document.body.style.cursor = 'grabbing'
-        e.target.style.cursor = 'grabbing'
         const imageRect = profile.current.getBoundingClientRect()
         //posicion del cursor respecto de la imagen
         imageOffset.current = {
@@ -284,8 +327,9 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             }
             imageDimensions.current = {
                 originalWidth: profile.current.width,
-                originalHeight: profile.current.heigth,
+                originalHeight: profile.current.height,
             }
+            console.log(profile.current.height)
             setImageSize({
                 height: height +'px',
                 width: width + 'px'

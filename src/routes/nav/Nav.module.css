@@ -7,31 +7,25 @@
 }
 .userProfile{
     display: flex;
-    justify-content: end;
     height: 40px;
-    margin: 0px 10px 0px;
     gap: 10px;
+    justify-content: end;
+    flex-grow: 1;
 }
 .userProfile p{
     padding: 0px;
     margin: 0px 10px 0px;
     display: flex;
     align-items: center;
+}
 
-}
-.navContent{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 20px 0px 20px;
-    flex-grow: 1;
-}
 .nav button{
     height: max-content;
     margin: 0px;
 }
 h1{
     margin: 0px;
+    padding: 0px;
 }
 h1:hover{
     cursor: pointer
@@ -47,3 +41,44 @@ h1:hover{
     background-color: lightcoral;
     border-radius: 5px;
 }
+.notificationsBell{
+    border-radius: 10px;
+}
+.notificationsBell img{
+    height: 30px;
+    width: 'auto';
+    padding: 5px;
+}
+.notificationsBell:hover{
+    background-color: rgba(251, 251, 251, 0.507);
+    cursor: pointer
+}
+.notificationsBell::after{
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    margin-top: 5px;
+    margin-left: -17px;
+    width: 10px;
+    height: 10px;
+    background-color: rgb(255, 255, 255);
+    pointer-events: none;
+}
+.listOfNotifications{
+    margin: 0px;
+    list-style-type: none;
+    padding: 10px;
+    position: fixed;
+    border-radius: 15px;
+    background-color:rgb(52, 52, 52);
+    z-index: 1
+}
+.listOfNotifications li{
+    padding: 10px;
+    z-index: 10
+}
+.listOfNotifications li:hover{
+    background-color: rgba(251, 251, 251, 0.507);
+    cursor: pointer
+}
+

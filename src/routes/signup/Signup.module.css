@@ -1,32 +1,23 @@
-
-.profileImage{
-    width:80px;
-    height: 80px;
-    background: red;
-}
-.uploadImage input{
-    display: none;
-}
-fieldset { 
+.form { 
     display: flex;
     flex-direction: column;
-    padding: 20px
+    padding: 20px;
+    margin: auto;
+    width: 300px;
 }
-.viewToken{
-    display: flex;
-    flex-direction: column;
-    color: white;
-    border: 1px solid white;
-    width: 800px;
-    height: 400px;
+.form input{
+    margin-bottom:10px;
 }
-.viewToken a{
-    margin: 0px 10px 0px;
-    word-wrap: break-word;
-    height: auto;
-    cursor: pointer;
+.form label{
+    margin-top:10px
+}
+.button{
+    width: max-content;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto
 }
 .error{
-    height: 40px;
-    color: white;
+    color: red;
+    font-size: .8rem
 }

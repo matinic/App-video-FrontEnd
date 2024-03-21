@@ -5,8 +5,18 @@ import style from './UploadVideo.module.css'
 import useCreateVideo from "../../hooks/useCreateVideo"
 import useUser from '../../hooks/useUser'
 import useCloudinarySignature from "../../hooks/useCloudinarySignature"
+import { io, Manager } from "socket.io-client";
 
 export default function UploadVideo() {
+
+  const manager = new Manager("http://localhost:3001")
+  const socket = manager.socket("/")
+  socket.on("connect",()=>{
+    console.log("conexion establecida con el servidor")
+  })
+  // socket.emit("hola", "mensaje del cliente");
+  
+
 
   const navigate = useNavigate()
 
@@ -16,12 +26,6 @@ export default function UploadVideo() {
     published: '',
     url: ''
   })
-
-  const formRef = useRef(form)
-
-  const seeRef = ()=>{
-    console.log(formRef.current)
-  }
 
   const { isSuccess } = useUser()
   
@@ -33,11 +37,11 @@ export default function UploadVideo() {
 
  const errorFactory =()=>{
   const error = {}
-  if(!form.title) error.title = "Write a title"
-  if(!video) error.url = "Select a file"
-  if(!Boolean(form.published.toString())) error.published = "Select an option"
-  return error
-}
+    if(!form.title) error.title = "Write a title"
+    if(!video) error.url = "Select a file"
+    if(!Boolean(form.published.toString())) error.published = "Select an option"
+    return error
+  }
 
   useCloudinarySignature()
 
@@ -89,11 +93,15 @@ useEffect(()=>{
 
   return (
     <>
+    <button onClick={()=>{
+      console.log('enviando mensaje')
+      socket.emit("hola","Hola desde el cliente")
+    }}>Saludar al servidor</button>
       {
         isSuccess ?
         <div>
                 <h2>UPLOAD VIDEO</h2>
-                <form action="" onSubmit={uploadVideoHandler} className={style.formBody} onClick={seeRef}>
+                <form action="" onSubmit={uploadVideoHandler} className={style.formBody}>
                     <fieldset>
                         <legend>Upload your video</legend>
                         <label>Title</label>

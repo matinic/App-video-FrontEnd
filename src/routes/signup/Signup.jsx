@@ -1,7 +1,9 @@
 import React,{ useEffect, useState, useRef} from 'react'
 import { useNavigate } from 'react-router-dom'
 import useSignup from "../../hooks/useSignup"
-import style from  "./Signup.module.css" 
+import style from  "./Signup.module.css"
+import show from "../../assets/show-eye.svg"
+import hide from "../../assets/hide-eye.svg"
 
 export default function Signup() {
 
@@ -19,6 +21,8 @@ const form = useRef({
 
 const [error,setError] = useState({})
 
+const [showPassword,setShowPassword] = useState("password")
+
 const formHandler = (e)=>{
     form.current = {
             ...form.current,
@@ -27,9 +31,6 @@ const formHandler = (e)=>{
    setError(errorHandler(form.current))
 }
 
-useEffect(()=>{
-    setError(errorHandler(form.current))
-},[])
 
 const errorHandler = (validate)=>{
     //username related errors
@@ -46,7 +47,7 @@ const errorHandler = (validate)=>{
 
         //email validation
         if( !emailExp.test(email) ) error.email = 'Invalid email'
-        if( !email ) error.email = 'Introduce email'
+        if( !email ) error.email = 'Introduce email.'
 
         //emailMatch 
         if( emailMatch !== email ) error.emailMatch = 'Email do not match'
@@ -99,11 +100,15 @@ const submitHandler = (e)=>{
             {error?.emailMatch && <li class={style.error}>{error?.emailMatch}</li>}
 
             <label >Password</label>
-            <input type="text" name="password" onChange={formHandler} value={form.password}/>
+            <div class={style.password}>
+                <input type={showPassword} name="password" onChange={formHandler} value={form.password} />
+                <img src={showPassword === "password" ? show : hide} alt="" fill="red"  title={showPassword === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword === "password" ? "text" : "password")}/>
+            </div>
             {error?.password && <li class={style.error}>{error?.password}</li>}
 
-            <label>Password</label>
-            <input onChange = {formHandler} name="passwordMatch" type="text" value={form.passwordMatch} />
+            <label>Confim Password</label>
+            
+            <input type={showPassword} onChange = {formHandler} name="passwordMatch" value={form.passwordMatch} />
             {error?.passwordMatch && <li class={style.error}>{error?.passwordMatch}</li>}
 
             <button type="submit" class={style.button}>send</button>

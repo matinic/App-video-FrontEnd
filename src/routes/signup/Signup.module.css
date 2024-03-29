@@ -18,6 +18,22 @@
     margin-right: auto
 }
 .error{
-    color: red;
-    font-size: .8rem
+    color: rgb(246, 118, 118);
+    font-size: .75rem
+}
+.password{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 30px;
+}
+.password img {
+    height: 20px;
+    width: 25px;
+    cursor: pointer;
+}
+.password input{
+    flex-grow: 1;
+    margin-top: auto;
+    margin-bottom: auto
 }

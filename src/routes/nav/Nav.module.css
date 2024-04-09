@@ -1,38 +1,34 @@
 .nav{
-    width: 100%;
-    height: 80px;
-    background-color: red;
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    border: 1px solid;
 }
 .userProfile{
+    border: 1px solid;
     display: flex;
-    height: 40px;
-    gap: 10px;
-    justify-content: end;
-    flex-grow: 1;
 }
 .userProfile p{
-    padding: 0px;
-    margin: 0px 10px 0px;
     display: flex;
     align-items: center;
 }
-
-.nav button{
-    height: max-content;
-    margin: 0px;
+.imageProfile{
+    width: 40px;
+    height: 40px;
 }
-h1{
+
+h1 {
     margin: 0px;
     padding: 0px;
+    border: 1px solid;
+}
+.button{
+    border: 1px solid;
+    margin: 0px;
 }
 h1:hover{
     cursor: pointer
 }
-.selected{
-    background-color: grey;
-}
+
 .profileSocket{
     display: flex;
 }
@@ -82,3 +78,13 @@ h1:hover{
     cursor: pointer
 }
 
+@media (width <= 768px){
+    .title{
+        font-size: 2.5rem;
+    }
+
+    .searchBar button, .searchBar input{
+        display: none
+    }
+    
+}

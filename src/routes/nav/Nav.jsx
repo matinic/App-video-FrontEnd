@@ -59,64 +59,67 @@ export default function Nav() {
   }
 
   const title = (
-    <h1 onClick={()=>navigate("/")}>MatiVid</h1>
+    <h1 onClick={()=>navigate("/")} class={style.title}>MyVid</h1>
   )
   return (
     <div className= {style.nav} >
         {title}
-        <div >
+
+        {/*Search bar */}
+        <div class={style.searchBar}>
           <button>search</button>
           <input type="text" />
         </div>
-          
-          <div className={style.clickScreen}>
-            <ul
-              className={style.listOfNotifications}
-              ref = {notificationsList} 
-              style={{
-                  top: notificationsPosition.top + 'px',
-                  left: notificationsPosition.left + 'px',
-                  visibility: showNotifications
-                }}
-              onClick = {()=> console.log('haciendo click en la lista de notificaciones')}
-            >
-              <li>"User1" has uploaded new video "Video Name" </li>
-              <li>"User2" responded your comment</li>
-              <li>"User3" has subscribed to your channel</li>
-              <li>"User4" has liked your video</li>
-            </ul>
-          </div>
         
-      {
-        isSuccess ?
-            <div className={style.userProfile}>
+        {/*List of notifications */}
+        <div className={style.clickScreen}>
+          <ul
+            className={style.listOfNotifications}
+            ref = {notificationsList} 
+            style={{
+                top: notificationsPosition.top + 'px',
+                left: notificationsPosition.left + 'px',
+                visibility: showNotifications
+              }}
+            onClick = {()=> console.log('haciendo click en la lista de notificaciones')}
+          >
+          </ul>
+        </div>
 
-              {/*Campana de notificaciones*/}
+        <Link
+          to="/create"
+          style={{postion:'relative'}}
+          class={style.button}
+        >
+              <h4>Upload</h4>
+        </Link>
+        {
+          isSuccess ?
+              <div className={style.userProfile}>
 
-              <div className={style.notificationsBell} ref={notificationsBell} onClick={notificationsFrame}>
-                <img src={notifications} />
-              </div>
-            
-              <Link to="/create" style={{postion:'relative'}}>
-                <button className={pathname === "/create" ? style.selected : style.normal}>UploadVideo</button>
-              </Link>
+                {/*Notifications bell*/}
 
-                <span className={style.profileSocket} onClick={()=>navigate(`/channel/${user.username}`)}>
-                  <img src={ user?.image || imageDefault } />
-                  <p>{`${user?.username}`}</p>
-                </span>
-              
-                <div>
-                  <button onClick={logout}>Logout</button>
+                <div className={style.notificationsBell} ref={notificationsBell} onClick={notificationsFrame}>
+                  <img src={notifications} />
                 </div>
+
+                {/*User profile info*/}
+
+                  <span className={style.profileSocket} onClick={()=>navigate(`/channel/${user.username}`)}>
+                    <img src={ user?.image || imageDefault } class={style.imageProfile}/>
+                    <p>{`${user?.username}`}</p>
+                  </span>
                 
-            </div>
-        :
-            <span className={style.userProfile}>
-              <button onClick={()=> navigate('/signin')}>Login</button>
-              <button onClick={()=> navigate('/signup')}>Register</button>
-            </span>
-      }
+                  <h4 onClick={logout}>Logout</h4>
+                  
+              </div>
+          :
+              <span className={style.userProfile}>
+                <button onClick={()=> navigate('/signin')}>Login</button>
+                <button onClick={()=> navigate('/signup')}>Register</button>
+              </span>
+        }
+    
   </div>
   )
 }

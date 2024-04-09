@@ -21,7 +21,10 @@ const form = useRef({
 
 const [error,setError] = useState({})
 
-const [showPassword,setShowPassword] = useState("password")
+const [showPassword,setShowPassword] = useState({
+    firstPass: "password",
+    secondPass: "password"
+})
 
 const formHandler = (e)=>{
     form.current = {
@@ -47,14 +50,14 @@ const errorHandler = (validate)=>{
 
         //email validation
         if( !emailExp.test(email) ) error.email = 'Invalid email'
-        if( !email ) error.email = 'Introduce email.'
+        if( !email ) error.email = 'Introduce email'
 
         //emailMatch 
         if( emailMatch !== email ) error.emailMatch = 'Email do not match'
         if( !emailMatch ) error.emailMatch = 'Repeat email'
         
         //password validation
-        if(password.length > 16 || password.length < 8) error.password = `Introduce a password between 8 and 16 characters`
+        if(password.length > 24 || password.length < 8) error.password = `Introduce a password between 8 and 24 characters`
         
         //passwordMatch
         if( passwordMatch !== password ) error.passwordMatch = 'Password do not match'
@@ -101,14 +104,16 @@ const submitHandler = (e)=>{
 
             <label >Password</label>
             <div class={style.password}>
-                <input type={showPassword} name="password" onChange={formHandler} value={form.password} />
-                <img src={showPassword === "password" ? show : hide} alt="" fill="red"  title={showPassword === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword === "password" ? "text" : "password")}/>
+                <input type={showPassword.firstPass} name="password" onChange={formHandler} value={form.password} />
+                <img src={showPassword.firstPass === "password" ? show : hide} alt="" fill="red"  title={showPassword.firstPass === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword.firstPass === "password" ? {...showPassword, firstPass: "text"} :  {...showPassword, firstPass: "password"})}/>
             </div>
             {error?.password && <li class={style.error}>{error?.password}</li>}
 
             <label>Confim Password</label>
-            
-            <input type={showPassword} onChange = {formHandler} name="passwordMatch" value={form.passwordMatch} />
+            <div class={style.password}>
+                <input type={showPassword.secondPass} onChange = {formHandler} name="passwordMatch" value={form.passwordMatch} />
+                <img src={showPassword.secondPass === "password" ? show : hide} alt="" fill="red"  title={showPassword.secondPass === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword.secondPass === "password" ? {...showPassword, secondPass: "text"} : {...showPassword, secondPass: "password"})}/>
+            </div>
             {error?.passwordMatch && <li class={style.error}>{error?.passwordMatch}</li>}
 
             <button type="submit" class={style.button}>send</button>

@@ -5,20 +5,40 @@ import style from './Videos.module.css'
 
 export default function Videos() {
 
-const {data} = useAllVideos()
-const allVideos = data?.data?.videos
+const [page,setPage] = React.useState(0)
+
+const {
+  data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+} = useAllVideos()
+const allVideos = data?.pages
 
   return (
-    <div className={style.videosContainer}>
-        {
-            allVideos?.map((video, i) => {
-                return (   
-                      <VideoCard video = {video} key={i} showData={true} />
-                  )
-            }).reverse()
-        }
+    <div>
+    <div className={style.allVideos}>
+      {
+        allVideos?.map((group, i) =>
+         group?.data?.videos.map(
+            (video,i)=>
+              <VideoCard
+                video = {video}
+                key={i}
+                showData={true}/>
+          )
+        )
+      }
     </div>
-
-  
+      <button class={style.mostrarMas} onClick={()=>{
+        fetchNextPage()
+      }}>
+        Load More
+      </button>
+    </div>
+   
   )
 }

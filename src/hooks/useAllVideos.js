@@ -1,14 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import axios from 'axios'
 
 export default function useAllVideos (){
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ['allVideos'],
-        queryFn: ()=>{
-            const url = "http://localhost:3001/list"
+        queryFn: ({pageParam = 0})=>{
+            console.log(pageParam)
+            const url = `http://localhost:3001/list?limit=${8}&page=${pageParam}`
             return axios.get(url)
         },
+       getNextPageParam: (lastPage, page) => lastPage.data.nextCursor
+    
     })
 }

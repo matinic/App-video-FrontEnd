@@ -5,8 +5,6 @@ import style from './Videos.module.css'
 
 export default function Videos() {
 
-const [page,setPage] = React.useState(0)
-
 const {
   data,
     error,
@@ -33,7 +31,7 @@ const allVideos = data?.pages
         )
       }
     </div>
-      <button class={style.mostrarMas} onClick={()=>{
+      <button className={style.mostrarMas} onClick={()=>{
         fetchNextPage()
       }}>
         Load More

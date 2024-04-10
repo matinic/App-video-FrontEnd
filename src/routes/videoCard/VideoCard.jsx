@@ -18,17 +18,15 @@ const goToChannel = (e)=>{
     e.stopPropagation()
     navigate(`/channel/${video?.user?.username}`)
 }
-console.log(profileImage)
-
     return (
         <div className={style.videoCard} onClick={goToVideo}>
     
             <video src = {url} className={style.thumbnail}/>
-            <div class={style.videoInfo}>
+            <div className={style.videoInfo}>
 
                 {
                     showData ?
-                    <div class={style.profileImage}style={{
+                    <div className={style.profileImage}style={{
                         width: "45px",
                         height: "45px",
                         backgroundImage: `url("${profileImage || "https://www.pngall.com/wp-content/uploads/5/Profile-Avatar-PNG-Picture.png"}")`,
@@ -40,7 +38,7 @@ console.log(profileImage)
                     : null
                 }
             
-                <div class={style.videoText}>
+                <div className={style.videoText}>
                     <h4>{title}</h4>
                     <a onClick={goToChannel}>{video.user?.username}</a>
                 </div>

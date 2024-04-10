@@ -5,12 +5,33 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import useLogout from '../../hooks/useLogout'
 import useUser from '../../hooks/useUser'
 import notifications from "../../assets/notifications_bell.png"
+import logoutIcon from "../../assets/logout.png"
+
 
 export default function Nav() {
 
+  const [userOpt,setUserOpt] = useState("none")
+
   const { data, isSuccess, isLoading, isFetching } = useUser()
 
-  const [showNotifications,setShowNotifications] = useState('hidden')
+  const profileMenu = useRef()
+
+  const profileImage = useRef()
+
+  //This hide the floating user's menu when the outside is clicked
+  useEffect(()=>{
+    const handler = (e)=>{
+      if(!profileMenu.current?.contains(e.target) && e.target !== profileImage.current && profileMenu.current){
+        setUserOpt("none")
+        // console.log("evento ejecutandose")
+      }
+    }
+    document.addEventListener('click',handler)
+  },[])
+  
+
+
+  const [showNotifications,setShowNotifications] = useState("none")
   const user = data?.data
   const { mutate } = useLogout()
   const navigate = useNavigate()
@@ -58,68 +79,85 @@ export default function Nav() {
     })
   }
 
-  const title = (
-    <h1 onClick={()=>navigate("/")} class={style.title}>MyVid</h1>
-  )
   return (
     <div className= {style.nav} >
-        {title}
 
-        {/*Search bar */}
-        <div class={style.searchBar}>
-          <button>search</button>
-          <input type="text" />
-        </div>
-        
-        {/*List of notifications */}
-        <div className={style.clickScreen}>
-          <ul
-            className={style.listOfNotifications}
-            ref = {notificationsList} 
-            style={{
-                top: notificationsPosition.top + 'px',
-                left: notificationsPosition.left + 'px',
-                visibility: showNotifications
-              }}
-            onClick = {()=> console.log('haciendo click en la lista de notificaciones')}
-          >
-          </ul>
-        </div>
+      {/*Website Name*/}
+      <h1
+        className={style.title}
+        onClick={()=>navigate("/")}
+      >
+        MyVid
+      </h1>
 
+      <div className={style.navButtonsContainer}>     
+         
+        {/*Upload button*/}
         <Link
           to="/create"
           style={{postion:'relative'}}
-          class={style.button}
         >
-              <h4>Upload</h4>
+          <p className={style.button} name="upload">Upload</p>
         </Link>
+
+        {/* Search bar */}
+        <div className={style.searchBar} >
+          <p className={style.searchButton}>Search</p>
+          <input type="text" />
+        </div>
+
         {
           isSuccess ?
-              <div className={style.userProfile}>
+            <>
+              {/*Notifications bell*/}
+              <img src={notifications} className={style.notificationsBell} ref={notificationsBell} onClick={notificationsFrame}/>
 
-                {/*Notifications bell*/}
+              {/*Notification's List */}
+              <ul
+                className={style.listOfNotifications}
+                ref = {notificationsList} 
+                style={{
+                    top: notificationsPosition.top + 'px',
+                    left: notificationsPosition.left + 'px',
+                    visibility: showNotifications
+                  }}
+              >
+              </ul>
 
-                <div className={style.notificationsBell} ref={notificationsBell} onClick={notificationsFrame}>
-                  <img src={notifications} />
-                </div>
+              {/*User profile Image*/}
+              <img
+                src={ user?.image || imageDefault }
+                className={style.imageProfile}
+                onClick={ ()=> setUserOpt(userOpt === "none" ? "" : "none") }
+                ref={profileImage}
+              />
 
-                {/*User profile info*/}
-
-                  <span className={style.profileSocket} onClick={()=>navigate(`/channel/${user.username}`)}>
-                    <img src={ user?.image || imageDefault } class={style.imageProfile}/>
-                    <p>{`${user?.username}`}</p>
-                  </span>
-                
-                  <h4 onClick={logout}>Logout</h4>
-                  
-              </div>
+              {/*User Profile nav buttons*/}
+              <ul className={style.userProfileButtons} data-display={userOpt} ref={profileMenu}>
+                  <li
+                    className={style.button}
+                    name="profile"
+                    onClick={ () => navigate(`/channel/${user.username}`) }
+                  >
+                    <img
+                      src={ user?.image || imageDefault }
+                      className={style.imageProfile}
+                    />
+                    {user.username}
+                  </li>
+                  <li className={style.button} name="logout">
+                    <img src={logoutIcon} alt="" name="logout"/>
+                    Log Out
+                  </li>
+              </ul>
+            </>
           :
-              <span className={style.userProfile}>
-                <button onClick={()=> navigate('/signin')}>Login</button>
-                <button onClick={()=> navigate('/signup')}>Register</button>
-              </span>
+            <>
+              <p onClick={()=> navigate('/signin')} name="signin" className={style.button}>Signin</p>
+              <p onClick={()=> navigate('/signup')} name="signup" className={style.button}>Signup</p>
+            </>
         }
-    
+      </div>
   </div>
   )
 }

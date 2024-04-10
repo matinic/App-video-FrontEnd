@@ -1,53 +1,74 @@
 .nav{
-    display: flex;
-    flex-wrap: wrap;
-    border: 1px solid;
-}
-.userProfile{
-    border: 1px solid;
+    position: fixed;
+    width: 100%;
+    background-color: black;
     display: flex;
 }
-.userProfile p{
+.title{
+    font-size: 2.1rem;
+}
+.title:hover{
+    cursor: pointer;
+}
+.navButtonsContainer{
+    display: flex;
+    flex-grow: 1;
+    justify-content: end;
+    align-items: center;
+    padding-right: 10px;
+}
+.navButtonsContainer *, .title {
+    margin: 4px;
+}
+.searchBar{
+    display: flex;
+    align-items:center;
+}
+.searchButton{
+    background-color:gray;
+    font-weight: bold;
+    margin: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
     display: flex;
     align-items: center;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    height: 31px;
+    cursor: pointer;
 }
-.imageProfile{
-    width: 40px;
-    height: 40px;
-}
-
-h1 {
-    margin: 0px;
-    padding: 0px;
-    border: 1px solid;
+.searchBar input{
+    padding: 7px;
+    border: 1px solid gray;
+    border-left: 0px;
+    background-color: black;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    margin-left: 0px;
 }
 .button{
-    border: 1px solid;
-    margin: 0px;
-}
-h1:hover{
-    cursor: pointer
-}
-
-.profileSocket{
-    display: flex;
-}
-.profileSocket:hover{
+    padding: 8px;
     cursor: pointer;
-    background-color: lightcoral;
+    color: white;
+}
+.button[name="upload"]{
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.button:hover{
+    background-color: gray;
     border-radius: 5px;
 }
 .notificationsBell{
-    border-radius: 10px;
-}
-.notificationsBell img{
-    height: 30px;
-    width: 'auto';
-    padding: 5px;
+    width: 23px;
+    height: 23px;
+    padding: 8px;
+    cursor: pointer;
 }
 .notificationsBell:hover{
-    background-color: rgba(251, 251, 251, 0.507);
-    cursor: pointer
+    background-color: gray;
+    border-radius: 50%;
 }
 .notificationsBell::after{
     content: '';
@@ -77,14 +98,54 @@ h1:hover{
     background-color: rgba(251, 251, 251, 0.507);
     cursor: pointer
 }
+.imageProfile{
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+.userProfileButtons{
+    position: absolute;
+    margin: 0px;
+    margin-top: 190px;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    list-style-type: none;
+    background-color: black;
+    border: 1px solid;
+    border-radius: 10px;
+}
+.userProfileButtons[data-display="none"]{
+    display: none
+}
+.button[name="profile"]{
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px 10px 0px 0px;
+}
+.button[name="profile"] img, .button[name="logout"] {
+    margin: 0px;
+}
+.button[name="logout"]{
+    padding: 12px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+}
+.button[name="logout"]:hover{
+   background-color: gray;
+   color: white;
+   border-radius: 0px 0px 10px 10px;
+}
+img[name="logout"]{
+    width: 25px;
+}
 
 @media (width <= 768px){
-    .title{
-        font-size: 2.5rem;
-    }
-
-    .searchBar button, .searchBar input{
-        display: none
-    }
+   
     
 }

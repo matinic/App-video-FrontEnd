@@ -2,13 +2,13 @@ import {create} from 'zustand'
 
 export const useStore = create( (set) => (
     {
-        showUserOpt: "none",
-        setShowUserOpt: () => set((state)=>{
-                if(state.showUserOpt === "none"){
-                    return { showUserOpt: "" }
+        pointerEvent: "",
+        setPointerEvent: () => set((state)=>{
+                if(state.pointerEvent === "none"){
+                    return { pointerEvent: "" }
                 }
-                if(state.showUserOpt === ""){
-                    return { showUserOpt: "none"}  
+                if(state.pointerEvent === ""){
+                    return {pointerEvent: "none"}  
                 }
             }
         )

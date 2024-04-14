@@ -66,45 +66,59 @@ export default function Channel() {
    }
 
   return (
-    <div>
-        <div className={style.profileChannel}>
+    <div className={style.channelContainer}>
 
+        {/*User profile header*/}
+        <span className={style.profileChannel}>
+            {/*Profile image of the channel */}
             <img
                 src={channelInfo?.image || imageDefault}
                 className={style.profileImage}
                 onClick={channelInfo?.username === userLogged?.username ? () => inputFile.current.click() : null}
             />
+
+            {/*This input load the image file when the user want to edit their profile image */}
             <form onChange={loadImage} ref={formImage} style={{display: 'none'}}>
                 <input type="file" ref={inputFile}  />
             </form>
+            <span className={style.nameContainer}>
+                {/*Channel's name*/}
+                <h1>{channelInfo?.username}</h1>
+                {/*Susbcriptors counter*/}
+                <p
+                    onClick={ ()=> setFollowersModal(prev => !prev) }
+                >
+                    {channelInfo?.followersCount} Subscriptors
+                </p>
+                {/*Suscribe button*/}
+                <button>
+                    Subscribe
+                </button>
+            </span>
+        </span>   
 
-            <h1>{channelInfo?.username}</h1>
-
-            <h3 style={{cursor: "pointer", color:"red"}} onClick={()=> setFollowersModal(prev => !prev) }>Followers {channelInfo?.followersCount}</h3>
-
-            {/* {Subscribe Button} */}
-   
-            {
-                channelInfo?.username !== userLogged?.username ? 
-                    <button 
-                        onClick={()=>{subscribe(channelInfo.id)}}
-                        style={ isSubscribed ? {backgroundColor: 'green', color: 'white'} : {backgroundColor: 'red', color: 'black'} }
-                    >
-                        {isSubscribed ? "Subscribed" : "Subcribe" }
-                    </button>
-                : null
-            }
-        </div>
-
-        {/* {Modal Profile Image change} */}
-
+        {
+        /*Edit profile photo modal
+            -It opens when the user does a click on their profile photo. The editor has the functinality to crop and scale a photo that the user upload from their pc, when the user accepts the image is uploaded to the api an if the action is successfull the state of the user is updated
+        */
+        }
         {  
-            modalProfileImg && createPortal(<ProfileImage closeModal={setModalProfileImg} image={imageFile} reset={resetForm()} setImageFile={setImageFile} usernameChannel={params.username}/>,document.body)
+            modalProfileImg && createPortal
+            (
+                <ProfileImage
+                    closeModal={setModalProfileImg}
+                    image={imageFile}
+                    reset={resetForm()}
+                    setImageFile={setImageFile}
+                    usernameChannel={params.username}
+                />
+                ,document.body
+            )
         }
 
         {/* Channel Videos */}
-        <hr/>
-        <h3>Channel Videos ({channel?.data.videos.length})</h3>
+
+        <h3>{channel?.data.videos.length} Videos </h3>
         <div className={style.channelVideos}>
             {
                 channelInfo?.videos.map((video,i) => <VideoCard video = {video} key={i} showData={false}/>)

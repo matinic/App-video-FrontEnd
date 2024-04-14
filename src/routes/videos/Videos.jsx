@@ -17,26 +17,25 @@ const {
 const allVideos = data?.pages
 
   return (
-    <div>
-    <div className={style.allVideos}>
-      {
-        allVideos?.map((group, i) =>
-         group?.data?.videos.map(
-            (video,i)=>
-              <VideoCard
-                video = {video}
-                key={i}
-                showData={true}/>
+      <div className={style.container}>
+      <div className={style.allVideos}>
+        {
+          allVideos?.map((group, i) =>
+          group?.data?.videos.map(
+              (video,i)=>
+                <VideoCard
+                  video = {video}
+                  key={i}
+                  showData={true}/>
+            )
           )
-        )
-      }
-    </div>
+        }
+      </div>
       <button className={style.mostrarMas} onClick={()=>{
-        fetchNextPage()
-      }}>
+          fetchNextPage()
+        }}>
         Load More
       </button>
     </div>
-   
   )
 }

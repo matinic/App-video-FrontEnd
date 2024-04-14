@@ -2,6 +2,9 @@
 .videoCard{
     cursor: pointer;
 }
+.videoCard[data-pointer="none"]{
+    pointer-events: none;
+}
 .thumbnail{
     width: 100%;
     height: 225px;

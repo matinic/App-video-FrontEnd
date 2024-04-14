@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import style from "./VideoCard.module.css"
 import { useNavigate } from 'react-router-dom'
+import {useStore} from "../../zustand/store"
 
 const VideoCard = function({ video, showData, userChannel }){
 
@@ -8,6 +9,9 @@ const {url,title,id} = video
 
 const isSubscribed = userChannel?.includes(video?.user?.id)
 const profileImage = video?.user?.image
+
+//Global state of pointer event attribute of video cards
+const pointerEvent = useStore((state)=> state.pointerEvent)
 
 const navigate = useNavigate() 
 
@@ -19,7 +23,7 @@ const goToChannel = (e)=>{
     navigate(`/channel/${video?.user?.username}`)
 }
     return (
-        <div className={style.videoCard} onClick={goToVideo}>
+        <div className={style.videoCard} onClick={goToVideo} data-pointer={pointerEvent}>
     
             <video src = {url} className={style.thumbnail}/>
             <div className={style.videoInfo}>

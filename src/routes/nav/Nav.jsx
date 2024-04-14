@@ -4,81 +4,58 @@ import imageDefault from "../../assets/profile-image.png"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import useLogout from '../../hooks/useLogout'
 import useUser from '../../hooks/useUser'
-import notifications from "../../assets/notifications_bell.png"
+import notificationsBellIcon from "../../assets/notifications_bell.png"
 import logoutIcon from "../../assets/logout.png"
 
 
 export default function Nav() {
 
-  const [userOpt,setUserOpt] = useState("none")
-
+  //Quey that brings all information about user asynchronous state
   const { data, isSuccess, isLoading, isFetching } = useUser()
 
-  const profileMenu = useRef()
-
-  const profileImage = useRef()
-
-  //This hide the floating user's menu when the outside is clicked
-  useEffect(()=>{
-    const handler = (e)=>{
-      if(!profileMenu.current?.contains(e.target) && e.target !== profileImage.current && profileMenu.current){
-        setUserOpt("none")
-        // console.log("evento ejecutandose")
-      }
-    }
-    document.addEventListener('click',handler)
-  },[])
-  
-
-
-  const [showNotifications,setShowNotifications] = useState("none")
+  //Information got from user query
   const user = data?.data
-  const { mutate } = useLogout()
+
+  //Logout hook
+  const { mutate:logout } = useLogout()
+
+  //navigation hook
   const navigate = useNavigate()
-  const {pathname} = useLocation()
-  //Estado inicial para determinar la Posicion inicial de la lista de notificationes
-  const [notificationsPosition,setNotificationsPosition] = useState({
-    top: 0,
-    left: 0
-  })
-  const notificationsBell = useRef()
+
+  //View state of the user menu
+  const [profileListView, setProfileListView] = useState("none")
+
+  //Notification state of the notifications
+  const [notificationsListView, setNotificationsListView] = useState("none")
+
+  //Image from user profile visible on the navbar (button)
+  const profileButton = useRef()
+
+  //Menu profile buttons container (list)
+  const profileList = useRef()
+
+  //Notifications bell image icon (button)
+  const notificationsButton = useRef()
+
+  //Notifications List (list)
   const notificationsList = useRef()
 
-  const attachToBell = (e)=>{
-    const bellRect = notificationsBell.current.getBoundingClientRect()
-    const notificationsListRect = notificationsList.current.getBoundingClientRect()
-    setNotificationsPosition({
-      top: bellRect.top,
-      left: bellRect.left - notificationsListRect.width,
-    })
-  } 
-
-  const notificationsFrame = ()=>{
-    setShowNotifications(prev => {
-      if(prev === 'hidden') return 'visible'
-      else{return 'hidden'}
-    })
-    attachToBell()
-  }
-
-  window.onresize = attachToBell
-  window.onscroll = attachToBell
-
-  document.onclick = (e)=>{
-    if(e.target.parentNode !== notificationsList.current && e.target !== notificationsBell.current.firstChild){
-      setShowNotifications('hidden')
-    }
-  }
- 
-  const logout = (e)=>{
-    e.preventDefault()
-    mutate(null,{
-      onSuccess: ()=>{
-       navigate('/')
+ //Function that returns handlers used in the hide list actions
+  const hideFunctionsFactory = (button, list, setState)=> (e)=>{
+    if(
+        !list.current?.contains(e.target) && //list
+        e.target !== button.current && //button
+        list.current //list
+      ){
+        setState("none")
+        document.removeEventListener("click",hideFunctionsFactory(button, list, setState))
       }
-    })
   }
+  const hideProfileListHandler = hideFunctionsFactory(profileButton, profileList, setProfileListView)
+  const hideNotifcationsListHandler = hideFunctionsFactory(notificationsButton, notificationsList, setNotificationsListView)
 
+
+  const notificationsMessages = ["New Video 1","New Video 2", "New Video 3" ]
   return (
     <div className= {style.nav} >
 
@@ -90,9 +67,10 @@ export default function Nav() {
         MyVid
       </h1>
 
+      {/*Nav buttons container */}
       <div className={style.navButtonsContainer}>     
          
-        {/*Upload button*/}
+        {/*Upload nav button*/}
         <Link
           to="/create"
           style={{postion:'relative'}}
@@ -108,46 +86,78 @@ export default function Nav() {
 
         {
           isSuccess ?
-            <>
-              {/*Notifications bell*/}
-              <img src={notifications} className={style.notificationsBell} ref={notificationsBell} onClick={notificationsFrame}/>
+            <>      
+             {/*Notifications Button*/}
+              <img
+                src={notificationsBellIcon}
+                className={style.notificationsBell}
+                ref={notificationsButton}
+                onClick={()=>{
+                    setNotificationsListView(notificationsListView === "none" ? "" : "none")
+                    document.addEventListener("click", hideNotifcationsListHandler)
+                  }
+                }
+              />
 
-              {/*Notification's List */}
+              {/*Notifications List */}
               <ul
-                className={style.listOfNotifications}
-                ref = {notificationsList} 
-                style={{
-                    top: notificationsPosition.top + 'px',
-                    left: notificationsPosition.left + 'px',
-                    visibility: showNotifications
-                  }}
+                className={style.notificationsList}
+                ref = {notificationsList}
+                data-display={notificationsListView}  
               >
+                  {
+                    notificationsMessages.map(
+                      (message,i) => <li key ={i} className={style.button}>{message}</li>
+                      ).reverse()
+                  }
               </ul>
 
-              {/*User profile Image*/}
+              {/*User profile Button*/}
               <img
                 src={ user?.image || imageDefault }
                 className={style.imageProfile}
-                onClick={ ()=> setUserOpt(userOpt === "none" ? "" : "none") }
-                ref={profileImage}
+                ref={profileButton}
+                onClick={ ()=> {
+                  setProfileListView( profileListView === "none" ? "" : "none" )
+                  document.addEventListener("click", hideProfileListHandler)
+                }}
               />
 
-              {/*User Profile nav buttons*/}
-              <ul className={style.userProfileButtons} data-display={userOpt} ref={profileMenu}>
+              {/*User Profile buttons*/}
+              <ul className={style.userProfileButtons} data-display={profileListView} ref={profileList} >
                   <li
                     className={style.button}
                     name="profile"
-                    onClick={ () => navigate(`/channel/${user.username}`) }
+                    onClick=
+                      { 
+                        () => 
+                          {
+                            navigate(`/channel/${user.username}`) 
+                            setProfileListView("none")
+                          }
+                      }
                   >
                     <img
                       src={ user?.image || imageDefault }
                       className={style.imageProfile}
+                      name="imgProfileLink"
                     />
                     {user.username}
                   </li>
-                  <li className={style.button} name="logout">
-                    <img src={logoutIcon} alt="" name="logout"/>
-                    Log Out
+                  {/*Logout Button*/}
+                  <li
+                      className={style.button}
+                      name="logout"
+                      onClick={()=>logout(null,
+                            {
+                              onSuccess: ()=>{
+                              navigate("/")
+                              setProfileListView("none")
+                            }}
+                          )
+                    }>
+                      <img src={logoutIcon} alt="" name="logout"/>
+                      Log Out
                   </li>
               </ul>
             </>

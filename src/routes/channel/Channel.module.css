@@ -1,3 +1,10 @@
+.channelContainer{
+    padding-top: var(--padding-top);
+    width: 90%;
+    border: 1px solid;
+    margin: auto;
+    max-width: 1800px;
+}
 .profileImage{
     height: 100px;
 }
@@ -5,9 +12,36 @@
     display: flex;
     gap: 25px;
     padding: 25px;
-    background-color: black;
-    border-radius: 20px;
     width: max-content;
+}
+.nameContainer{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+}
+.nameContainer h1{
+    margin: 0px;
+    font-size: 2.5rem;
+    padding: 0px;
+}
+.nameContainer p{
+    margin: 0px;
+    color: white;
+    font-style: italic; 
+}
+.nameContainer button{
+    width: max-content;
+    text-align: center;
+    background-color: black;
+    cursor: pointer;
+    padding: 5px 25px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    border: 1px solid;
+    transition: background 0.25s;
+}
+.nameContainer button:hover{
+    background-color: gray;
 }
 .channelVideos{
     gap:10px;

@@ -1,16 +1,23 @@
 
-
+.container{
+    position: absolute;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
 .allVideos {
-    padding-top: 100px;
+    padding-top: var(--padding-top);
     width: 100%;
     display: grid;
     grid-template-columns: repeat(4,300px);
     justify-content: center;
     gap: 15px;
+    z-index: 10;
 }
 .mostrarMas{
+    margin-top: 20px;
     margin-left: 50%;
     transform: translate(-50%);
+    position: absolute;
 }
 
 @media (width <= 1300px){

@@ -3,6 +3,7 @@
     width: 100%;
     background-color: black;
     display: flex;
+    z-index: 20;
 }
 .title{
     font-size: 2.1rem;
@@ -36,6 +37,8 @@
     border-bottom-left-radius: 8px;
     height: 31px;
     cursor: pointer;
+    z-index: 50;
+    pointer-events: auto
 }
 .searchBar input{
     padding: 7px;
@@ -60,6 +63,7 @@
     background-color: gray;
     border-radius: 5px;
 }
+/*Notification Bell*/
 .notificationsBell{
     width: 23px;
     height: 23px;
@@ -70,34 +74,18 @@
     background-color: gray;
     border-radius: 50%;
 }
-.notificationsBell::after{
-    content: '';
+/*Notifications List*/
+.notificationsList{
     position: absolute;
-    border-radius: 50%;
-    margin-top: 5px;
-    margin-left: -17px;
-    width: 10px;
-    height: 10px;
-    background-color: rgb(255, 255, 255);
-    pointer-events: none;
-}
-.listOfNotifications{
-    margin: 0px;
+    top: 55px;
+    right: 60px;
+    padding: 0px;
     list-style-type: none;
-    padding: 10px;
-    position: fixed;
-    border-radius: 15px;
-    background-color:rgb(52, 52, 52);
-    z-index: 1
+    background-color: black;
+    border: 1px solid;
+    border-radius: 10px;
 }
-.listOfNotifications li{
-    padding: 10px;
-    z-index: 10
-}
-.listOfNotifications li:hover{
-    background-color: rgba(251, 251, 251, 0.507);
-    cursor: pointer
-}
+/*Profile Controls*/
 .imageProfile{
     width: 40px;
     height: 40px;
@@ -105,30 +93,26 @@
 }
 .userProfileButtons{
     position: absolute;
+    display: block;
     margin: 0px;
-    margin-top: 190px;
-    display: flex;
-    flex-direction: column;
+    margin-top: 198px;
     padding: 0px;
     list-style-type: none;
     background-color: black;
     border: 1px solid;
     border-radius: 10px;
 }
-.userProfileButtons[data-display="none"]{
+.userProfileButtons[data-display="none"], .notificationsList[data-display="none"]{
     display: none
 }
 .button[name="profile"]{
-    margin: 0px;
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 10px;
 }
-.button[name="profile"] img, .button[name="logout"] {
-    margin: 0px;
-}
+
 .button[name="logout"]{
     padding: 12px;
     display: flex;
@@ -139,7 +123,10 @@
 .button[name="logout"]:hover{
    background-color: gray;
    color: white;
-   border-radius: 0px 0px 10px 10px;
+ 
+}
+.imageProfile[name="imgProfileLink"]{
+    margin: 0px;
 }
 img[name="logout"]{
     width: 25px;

@@ -33,8 +33,6 @@ const formHandler = (e)=>{
         }
    setError(errorHandler(form.current))
 }
-
-
 const errorHandler = (validate)=>{
     //username related errors
         let error = {}

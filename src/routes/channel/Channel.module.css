@@ -1,17 +1,16 @@
 .channelContainer{
     padding-top: var(--padding-top);
     width: 90%;
-    border: 1px solid;
     margin: auto;
     max-width: 1800px;
 }
 .profileImage{
     height: 100px;
 }
-.profileChannel{
+.channelHeader{
     display: flex;
     gap: 25px;
-    padding: 25px;
+    padding: 25px 25px 25px 0px;
     width: max-content;
 }
 .nameContainer{
@@ -40,11 +39,57 @@
     border: 1px solid;
     transition: background 0.25s;
 }
+button[data-subscribed="true"],
 .nameContainer button:hover{
     background-color: gray;
+    cursor: pointer
 }
-.channelVideos{
-    gap:10px;
+.channelMenu{
     display: flex;
-    flex-wrap: wrap;
+    width: max-content;
+    list-style-type: none;
+
+    font-size: 0.85rem;
+    padding: 4px;
+    gap: 5px;
+    border-radius: 25px;;
+}
+.channelMenu li{
+    padding: 5px 15px;
+    border-radius: 25px;
+    transition: background .20s ease;
+}
+.channelMenu li:hover{
+    background-color: black;
+    cursor: pointer;
+}
+.channelMenu li[data-selected="true"]{
+    background-color: black
+}
+.viewsContainer{
+    display: grid;
+    grid-template-columns: repeat(5,300px);
+    gap: 15px;
+}
+.viewsContainer[data-display="false"]{
+    display: none;
+}
+
+@media (width <= 1300px){
+    .viewsContainer{
+        display: grid;
+        grid-template-columns: 300px 300px 300px;
+    }
+}
+@media (width <= 1000px){
+    .viewsContainer{
+        display: grid;
+        grid-template-columns: 300px 300px;
+    }
+}
+@media (width <= 650px){
+    .viewsContainer{
+        display: grid;
+        grid-template-columns: 300px;
+    }
 }

@@ -4,12 +4,13 @@ import useSignup from "../../hooks/useSignup"
 import style from  "./Signup.module.css"
 import show from "../../assets/show-eye.svg"
 import hide from "../../assets/hide-eye.svg"
-
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 export default function Signup() {
 
 const navigate = useNavigate()
 
-const {mutate:submitForm,isLoading:isSubmitingFrom} = useSignup()
+const {mutate:submitForm,isLoading:isSub} = useSignup()
 
 const form = useRef({
     username: "",
@@ -71,18 +72,19 @@ const submitHandler = (e)=>{
         alert("Complete fieds")
     }else{
         submitForm(form.current,{
-            onSuccess: ()=>{
-                alert("Signup successfull")
+            onSuccess: (data)=>{
+                alert(data.data.message)
+                navigate("/signin")
             },
             onError: (err)=>{
-                alert("Something went wrong: " + "\n" + err.response.data.message)
+                alert(`Something went wrong: "${err.response.data}"`)
             }
         })
     }
 }
 
   return (
-        <form onSubmit={submitHandler}>
+        <form onSubmit={submitHandler} className={style.formContainer}>
 
         <fieldset className='form' class={style.form}>
 
@@ -110,15 +112,16 @@ const submitHandler = (e)=>{
             <label>Confim Password</label>
             <div class={style.password}>
                 <input type={showPassword.secondPass} onChange = {formHandler} name="passwordMatch" value={form.passwordMatch} />
-                <img src={showPassword.secondPass === "password" ? show : hide} alt="" fill="red"  title={showPassword.secondPass === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword.secondPass === "password" ? {...showPassword, secondPass: "text"} : {...showPassword, secondPass: "password"})}/>
+                <img src={showPassword.secondPass === "password" ? show : hide} title={showPassword.secondPass === "password" ? "show password" : "hide password"} onClick={()=>setShowPassword(showPassword.secondPass === "password" ? {...showPassword, secondPass: "text"} : {...showPassword, secondPass: "password"})}/>
             </div>
             {error?.passwordMatch && <li class={style.error}>{error?.passwordMatch}</li>}
 
             <button type="submit" class={style.button}>send</button>
+            
 
         </fieldset>
 
-        <h3>{isSubmitingFrom && "Sending Form"}</h3>
+        <h3>{isSub && "Sending Form"}</h3>
         
     </form>   
   )

@@ -2,16 +2,17 @@ import React,{useEffect, useRef, useState} from 'react'
 import style  from './Nav.module.css'
 import imageDefault from "../../assets/profile-image.png"
 import { useNavigate, Link, useLocation } from 'react-router-dom'
-import useLogout from '../../hooks/useLogout'
-import useUser from '../../hooks/useUser'
+import { useLogout } from '../../hooks/mutationHooks'
+import { useUser } from '../../hooks/queryHooks'
 import notificationsBellIcon from "../../assets/notifications_bell.png"
 import logoutIcon from "../../assets/logout.png"
 
-
 export default function Nav() {
 
+  const {pathname} = useLocation()
+
   //Quey that brings all information about user asynchronous state
-  const { data, isSuccess, isLoading, isFetching } = useUser()
+  const { data, isSuccess } = useUser()
 
   //Information got from user query
   const user = data?.data
@@ -85,8 +86,7 @@ export default function Nav() {
         </div>
 
         {
-          isSuccess ?
-            <>      
+          isSuccess && <>      
              {/*Notifications Button*/}
               <img
                 src={notificationsBellIcon}
@@ -148,25 +148,32 @@ export default function Nav() {
                   <li
                       className={style.button}
                       name="logout"
-                      onClick={()=>logout(null,
-                            {
-                              onSuccess: ()=>{
+                      onClick={ () => logout(null,
+                          {
+                            onSuccess: () => {
                               navigate("/")
                               setProfileListView("none")
-                            }}
-                          )
+                            }
+                          }
+                        )
                     }>
                       <img src={logoutIcon} alt="" name="logout"/>
                       Log Out
                   </li>
               </ul>
             </>
-          :
-            <>
-              <p onClick={()=> navigate('/signin')} name="signin" className={style.button}>Signin</p>
-              <p onClick={()=> navigate('/signup')} name="signup" className={style.button}>Signup</p>
-            </>
         }
+        {
+          ( 
+            !user ?
+            <>
+              <p onClick={()=> navigate('/signup')} name="signup" className={style.button}>Signup</p>
+              <p onClick={()=> navigate('/signin')} name="signin" className={style.button}>Signin</p>
+            </>
+            : null 
+            ) 
+        }
+    
       </div>
   </div>
   )

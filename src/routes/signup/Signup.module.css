@@ -1,9 +1,12 @@
-
+.formContainer{
+    padding-top: var(--padding-top)
+}
 .form { 
     display: flex;
     flex-direction: column;
     width: 300px;
     margin: auto;
+    gap:5px;
 }
 .form input{
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import useAllVideos from '../../hooks/useAllVideos.js'
+import { useAllVideos } from '../../hooks/queryHooks.js'
 import VideoCard from '../videoCard/VideoCard.jsx'
 import style from './Videos.module.css'
 

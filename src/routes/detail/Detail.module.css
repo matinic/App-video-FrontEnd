@@ -57,8 +57,12 @@
     border: 1px solid;
     transition: all 0.2s;
 }
-.subscribeButton:hover{
+button[data-published="true"],
+.subscribeButton:hover,
+.subscribeButton[data-subscribed="true"],
+.edit:hover{
     background-color: gray;
+    cursor: pointer
 }
 .likeDislike {
     position:absolute;
@@ -83,7 +87,8 @@
 .likeDislike div[name="dislike"]{
     border-radius: 0px 30px 30px 0px;
 }
-.likeDislike div:hover{
+.likeDislike div:hover,
+.likeDislike div[data-selected="true"]{
     background-color: gray;
 }
 .likeDislike span{
@@ -93,6 +98,7 @@
     height: 20px;
     background-color: gray;
 }
+
 .videoDescription{
     color: lightgray;
     min-height: 20px;
@@ -106,6 +112,9 @@
     scrollbar-width: thin;
     scrollbar-color: black;
     text-wrap: wrap ;
+}
+.videoDescription[data-expand="true"]{
+    max-height: max-content
 }
 .expandButton{
     background-color: lightgray;
@@ -125,4 +134,31 @@
     background-color: black;
     color: white;
 }
-
+.expandButton[data-expand="true"]{
+    transform:rotate(180deg)
+}
+.profileImage{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;;
+}
+.profileImage img{
+    height: 100%;
+}
+.edit{
+    padding-left: 5px;
+    padding-right: 15px;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    gap: 10px;
+}
+.videoOptions{
+    display: flex;
+    gap: 10px;
+}

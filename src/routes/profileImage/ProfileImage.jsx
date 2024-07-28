@@ -346,7 +346,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
     const {mutate:mutateBackSign} = useSignCloudinaryParameters()
 
     //Hook que envia la informacion necesaria para actualizar el estado del usuario en el servidor 
-    const {mutate:mutateUpdateUserData} = useUpdateUserData(usernameChannel)
+    const {mutate:mutateUpdateUserData} = useUpdateUserData()
 
     const queryClient = useQueryClient()
 
@@ -379,7 +379,8 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                         closeModal(false)
                         //llamamos a la mutacion que actualiza el estado del usuario en el servidor
                         mutateUpdateUserData({
-                            image: data.data.eager[0].url
+                            data: data.data.eager[0].url,
+                            username: usernameChannel
                         },{
                             //Funcion que se ejecuta en caso de que la actualizacion del estado del usuario haya ssalido mal
                             onError: (error)=>{

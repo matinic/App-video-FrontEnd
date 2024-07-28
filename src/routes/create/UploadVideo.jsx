@@ -1,23 +1,21 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import useUploadVideo from '../../hooks/useUploadVideo';
+import { useUploadVideo, useCreateVideo } from "../../hooks/mutationHooks"
+import { useUser } from '../../hooks/queryHooks'
 import style from './UploadVideo.module.css'
-import useCreateVideo from "../../hooks/useCreateVideo"
-import useUser from '../../hooks/useUser'
-import useCloudinarySignature from "../../hooks/useCloudinarySignature"
 import { io, Manager } from "socket.io-client";
 
 export default function UploadVideo() {
 
-  const manager = new Manager("http://localhost:3001")
-  const socket = manager.socket("/")
-  socket.on("connect",()=>{
-    console.log("conexion establecida con el servidor")
-  })
-  // socket.emit("hola", "mensaje del cliente");
+  const socektIo = ()=>{
+    const manager = new Manager("http://localhost:3001")
+    const socket = manager.socket("/")
+    socket.on("connect",()=>{
+      console.log("conexion establecida con el servidor")
+    })
+    // socket.emit("hola", "mensaje del cliente");
+  }
   
-
-
   const navigate = useNavigate()
 
   const [form,setForm] = useState({
@@ -43,9 +41,7 @@ export default function UploadVideo() {
     return error
   }
 
-  useCloudinarySignature()
-
-  const { mutate:upload, isLoading, isSuccess:isUploadSuccess, mutateAsync:uploadAsync } = useUploadVideo()
+  const { mutate:upload, isLoading, isSuccess:isUploadSuccess } = useUploadVideo()
 
   const { mutate:submit } =  useCreateVideo()
 
@@ -99,11 +95,14 @@ useEffect(()=>{
     }}>Saludar al servidor</button>
       {
         isSuccess ?
-        <div>
-                <h2>UPLOAD VIDEO</h2>
-                <form action="" onSubmit={uploadVideoHandler} className={style.formBody}>
+        <div className={style.formContainer}>
+                <form onSubmit={uploadVideoHandler} className={style.formBody}>
                     <fieldset>
                         <legend>Upload your video</legend>
+
+                        <input type="file" onChange={fileHandler}/>
+                        <Error message={error?.url}/>
+
                         <label>Title</label>
                         <input type="text" value={form.title} onChange={formHandler} name= 'title'/>
                         <Error message={error?.title}/>
@@ -111,24 +110,42 @@ useEffect(()=>{
                         <label>Description</label>
                         <textarea type="text" value={form.description} onChange={formHandler} name= 'description'/>
 
-                        <input type="file" onChange={fileHandler}/>
-                        <Error message={error?.url}/>
-
-                        <fieldset onChange={(e)=> setForm(prev => ({...prev, published : "true" === e.target.value}))}>
-                          <legend>published</legend>
-                          <input type="radio" id="yes" name="published" value={"true"}/><label htmlFor="yes">YES</label>
-                          <input type="radio" id="no" name="published" value={"false"}/><label htmlFor="no">NO</label>
+                        <fieldset
+                          onChange={(e)=> setForm(prev => ({...prev, published : "true" === e.target.value}))}
+                        >
+                          <legend>public</legend>
+                          <div>
+                            <input
+                              type="radio"
+                              id="yes"
+                              name="published"
+                              value={"true"}
+                            />
+                            <label htmlFor="yes">
+                              YES
+                            </label>
+                          </div>
+                          <div>
+                            <input
+                              type="radio"
+                              id="no"
+                              name="published"
+                              value={"false"}
+                            />
+                            <label htmlFor="no">
+                              NO
+                            </label>
+                          </div>
+                          <Error message={error?.published}/>
                         </fieldset>
-                        <Error message={error?.published}/>
 
-                        <button disabled={false}>create</button>
+                        <button disabled={Object.keys(error).length}>OK</button>
                     
                         {
                           isLoading ? <div>Uploading...</div> : null
                         }
                     </fieldset>
                 </form>
-            <video src={form.url}></video>
         </div>
         : null
       } 

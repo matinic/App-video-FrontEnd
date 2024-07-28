@@ -1,0 +1,58 @@
+.modalBackground{
+    background: rgba(246, 246, 246, 0.25);
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 90;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+.formContainer{
+    width: max-content;
+    height: max-content;
+    background-color: black;
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    top: 50vh;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor:auto;
+}
+.formContainer input, .formContainer textarea{
+    background-color: rgb(219, 219, 219);
+    border: none;
+    border-radius: 8px;
+    color:rgb(17, 6, 6);
+    padding: 5px;
+    min-width: 300px;
+}
+.formContainer textarea {
+    overflow: auto;
+    height: 100px;
+    min-height: 30px;
+    max-height: 250px;
+    max-width: 500px;
+}
+.videoOptions button{
+    width: max-content;
+}
+.videoOptions button[name="delete"]{
+    background-color: rgb(138, 4, 4);
+}
+.title, .description{
+    display: flex;
+    flex-direction: column;
+}
+.decisionButtons{
+    display:flex;
+    justify-content: center;
+    gap: 20px;
+}
+.error{
+    color: rgb(255, 0, 0)
+}

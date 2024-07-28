@@ -1,6 +1,59 @@
 .login { 
     display: flex;
     flex-direction: column;
-    padding: 20px
+    padding: 20px;
+    gap: 10px;
+    border-radius: 10px;
+    --input-height: 25px;
 }
+.formContainer{
+    padding-top: var(--padding-top);
+    width: 400px;
+    margin: auto;
+}
+.formContainer input{
+    height: var(--input-height);
+    box-sizing: border-box;
+}
+.login button{
+    width: max-content;
+    margin-left: 50%;
+    transform: translate(-50%);
+}
+.password{
+    display: relative;
+}
+.visibility[data-visibility="true"]{
+    display: none;
+}
+.visibilityOff[data-visibility="false"]{
+    display: none
+}
+input[data-name="password"]{
+    width: 100%;
+    box-sizing:border-box;
+    padding-right: 45px;
+}
+.visibilityButton{
+    cursor: pointer;
+    left: 100%;
+    transform: translateX(-100%);
+}
+.visibilityButton span{
+    border: yellow 1px solid;
+}
+.inputContainer{ 
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    height: var(--input-height);
+}
+input[data-name="password"],
+.visibilityButton{
+    position: absolute;
+}
+
+
+
 

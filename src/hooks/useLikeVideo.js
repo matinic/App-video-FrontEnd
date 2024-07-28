@@ -1,11 +1,11 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query"
 import axios from  "axios"
 
-export default function useLikeVideo (){
+export default function useLikeVideo (id){
 
     const queryClient = useQueryClient()
 
-    return useMutation((id)=>{
+    return useMutation((option)=>{
         const {data} = queryClient.getQueryData(['refresh'])
         const url = `http://localhost:3001/like`
         const config={
@@ -13,10 +13,10 @@ export default function useLikeVideo (){
                 Authorization: `Bearer ${data.accessToken}`
             }
         }
-        return axios.put(url,{id},config)
+        return axios.put(url,{id,option},config)
     },{
-        onSettled: (data,err,context)=>{
-            queryClient.invalidateQueries(['video',context])
+        onSuccess: (data,err,context)=>{
+            queryClient.invalidateQueries(['video',id])
             queryClient.invalidateQueries(['user'])
             queryClient.invalidateQueries(['likedVideos'])
         }

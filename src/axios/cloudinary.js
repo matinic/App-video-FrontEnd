@@ -15,7 +15,7 @@ cloudinaryAxios.interceptors.request.use( async config => {
         config.url = `${config.url}/upload?api_key=${API_KEY}&timestamp=${cloud.data.timestamp}&signature=${cloud.data.signature}`
         return config
     } catch (error) {
-        alert(error.message)
+        if(error instanceof Error) alert("something went wrong while uploading image to Cloudinary" + "\n" + error.message)
     }
 })
 

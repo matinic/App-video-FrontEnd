@@ -1,8 +1,7 @@
 import axios from 'axios'
 import chalk from 'chalk';
 
-const requireAuthRoutes = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like']
-
+const requireAuthRoutes = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like','/signature','/update_profile']
 
 const myApi = axios.create({
     baseURL: 'http://localhost:3001/',

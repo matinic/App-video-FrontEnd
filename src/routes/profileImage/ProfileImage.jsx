@@ -1,11 +1,8 @@
 import style from "./ProfileImage.module.css"
 import {useEffect, useRef, useState} from "react"
-import useSignCloudinaryParameters from "../../hooks/useSignCloudinaryParmeters"
-import useUploadImage from "../../hooks/useUploadImage"
-import useUpdateUserData from "../../hooks/useUpdateUserData"
-import {useQueryClient} from "@tanstack/react-query"
+import {useUploadImage, useUpdateUserData } from "../../hooks/mutationHooks"
 
-export default function ProfileImage({image,closeModal,reset,setImageFile,usernameChannel}){
+export default function ProfileImage({image,closeModal,reset,setImageFile,username}){
     const profile = useRef()
     const container = useRef()
     const circle = useRef()
@@ -79,7 +76,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         e.preventDefault()
         const {positionX,positionY} = imageOffset.current
         const imageRect = profile.current.getBoundingClientRect()
-        // Se determina la posicion que va a tener la imagen en relacion a la pocion dinamica del puntero del raton
+        // Se determina la posicion que va a tener la imagen en relacion a la posicion dinamica del puntero del raton
         const top =  e.clientY - containerRect.current.y - positionY 
         const left = e.clientX - containerRect.current.x - positionX
         const bottom = top + imageRect.height 
@@ -285,12 +282,15 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         document.onmousemove = saveCoords
     }
    
-    document.onmouseup = (e)=>{
-        e.preventDefault()
-        profile.current.style.cursor = 'grab'
-        document.body.style.cursor = 'auto'
-        document.onmousemove = null
-    }
+    useEffect(()=>{
+        console.log("componente montado")
+        document.onmouseup = (e)=>{
+            e.preventDefault()
+            profile.current.style.cursor = 'grab'
+            document.body.style.cursor = 'auto'
+            document.onmousemove = null
+        }
+    },[])
 
     //Funcion para redimensiona imagen despues del renderiizado inicial
     const [redimention,setRedimention] = useState(true)
@@ -329,7 +329,6 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                 originalWidth: profile.current.width,
                 originalHeight: profile.current.height,
             }
-            console.log(profile.current.height)
             setImageSize({
                 height: height +'px',
                 width: width + 'px'
@@ -342,17 +341,12 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
     //Hook que se encarga de la subida de la imagen a la API de Cloudinary
     const {mutate:mutateUploadImage} = useUploadImage()
 
-    //Hook que se encarga de retribuir la firma del backend para poder subir los archivos a Cloudinary
-    const {mutate:mutateBackSign} = useSignCloudinaryParameters()
-
     //Hook que envia la informacion necesaria para actualizar el estado del usuario en el servidor 
     const {mutate:mutateUpdateUserData} = useUpdateUserData()
 
-    const queryClient = useQueryClient()
-
-    const acceptAndUploadToCloudinary = ()=>{
-      
-        mutateBackSign({
+    const changeUserAvatar = () => mutateUploadImage({
+        image,
+        params: {
             eager:
             `c_crop,h_${cloudTransformations.height},` +
             `w_${cloudTransformations.width},` + 
@@ -363,43 +357,21 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             `r_max,` +
             `f_auto/`,
             folder: 'user_profile_images',
-            public_id: queryClient.getQueryData(['user']).data.username //Nombre del usurio guardado en caché
+            public_id: username
+        }
+    },{
+        //llamamos a la mutacion que actualiza el estado del usuario en el servidor
+        onSuccess: data => mutateUpdateUserData({
+            image: data.data.eager[0].url,
+            username
         },{
-            //Funcion que se ejecuta en caso de que la obtencion de la firma desde el backedn haya sido exitosa
-            onSuccess: (data,params)=>{
-                //En caso de que todo haya salido bien se ejecuta la mutacion que se encarga de la subida de la iamgen a Cloudinary
-                mutateUploadImage({
-                    body: image,
-                    data,
-                    params
-                },{
-                    //Fucion que se ejecuta en caso de que la subida de la imagen a Cloudinary haya salido bien
-                    onSuccess: (data)=>{
-                        //se cierra la ventana del modal
-                        closeModal(false)
-                        //llamamos a la mutacion que actualiza el estado del usuario en el servidor
-                        mutateUpdateUserData({
-                            data: data.data.eager[0].url,
-                            username: usernameChannel
-                        },{
-                            //Funcion que se ejecuta en caso de que la actualizacion del estado del usuario haya ssalido mal
-                            onError: (error)=>{
-                                alert('Something went wrong [2]' + ' ' + error)
-                            }
-                        })
-                    },
-                    //Funcion que se ejecuta en caso de que la subida de la imagen a Cloudinary haya salido mal
-                    onError: (error)=>{
-                        alert('Something went wrong [1]' + ' ' + error)
-                    }
-                })
-            },
-            //Error en caso de que algo salga mal al obtener la firma
-            onError: (error)=>{
-                alert('Something went wrong [0]' + ' ' + error)
-            }
-        })
-    }
+            onSettled: () => closeModal(false),    //se cierra la ventana del modal
+            onError: (error) => alert('Something went wrong while updating user: ' + ' ' + error)
+        }),    
+        //Funcion que se ejecuta en caso de que la subida de la imagen a Cloudinary haya salido mal
+        onError: (error) => alert('Something went wrong while uploading image' + ' ' + error)
+    })
+    
     return (    
         <div className={style.modalBackground}>
             <div className={style.modalContainer}>
@@ -408,6 +380,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                         src={image}
                         ref={profile}
                         onMouseDown={grabImage}
+                        draggable="false"
                         style={
                             {
                                 transform: `translate(${imgPositionX.transform},${imgPositionY.transform})`,
@@ -424,7 +397,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
                 <div className={style.buttonsContainer}>
                     <button name="zoomin" onClick={zoom}>Zoom +</button>
                     <button name="zoomout" onClick={zoom}>Zoom -</button>
-                    <button onClick={acceptAndUploadToCloudinary}>Accept</button>
+                    <button onClick={changeUserAvatar}>Accept</button>
                     <button onClick={()=> {closeModal(false); reset(); setImageFile(null)}}>Cancel</button>
                 </div>
             </div>

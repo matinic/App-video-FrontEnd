@@ -15,7 +15,8 @@ const useLogout = () => {
         mutationFn: () => myApi.post('/logout'),
         onSuccess: () => {
             localStorage.removeItem('accessToken')
-            [['user'],['likeVideos'],['subscriptions']].forEach(queryId => {
+            const queries = [['user'],['likeVideos'],['subscriptions']]
+            queries.forEach(queryId => {
                 queryClient.removeQueries(queryId)
             })
         }
@@ -45,9 +46,10 @@ const useLikeVideo = videoId => {
     return useMutation({
         mutationFn: option => myApi.put(`/like?id=${videoId}&option=${option}`),
         onSuccess: () => {
-           [['video',videoId],['user'],['likedVideos']].forEach(queryId => {
-            queryClient.invalidateQueries(queryId)
-           })
+            const queries = [['video',videoId],['user'],['likedVideos']]
+            queries.forEach(queryId => {
+                queryClient.invalidateQueries(queryId)
+            })
         }
     })
 }
@@ -55,9 +57,9 @@ const useLikeVideo = videoId => {
 const usePublish = videoId => {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: option => myApi.put(`/publish?id=${videoId}&published=${option}`),
-        onSettled: res => {
-            queryClient.invalidateQueries(['video',res.data.id])
+        mutationFn: option => myApi.put(`/publish?id=${videoId}`,{published: option}),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['video',videoId])
         }
     })
 } 
@@ -71,7 +73,8 @@ const useSubscribe = () => {
     return useMutation({
         mutationFn: userId => myApi.post(`/subscribe?id=${userId}`),
         onSettled: () => {
-            [['user'],['channel'],['video'],['subscriptions'],['followers']].forEach( queryId => {
+            const queries = [['user'],['channel'],['video'],['subscriptions'],['followers']]
+            queries.forEach( queryId => {
                 queryClient.invalidateQueries(queryId)
             })
         }
@@ -80,48 +83,38 @@ const useSubscribe = () => {
 
 const useUpdateUserData = () => {
     const queryClient = useQueryClient()
-    useMutation({
-        mutationFn: args => myApi.put('update_profile',args.data),
-        onMutate: async args => {
+    return useMutation({
+        mutationFn: ({image}) => myApi.put('/update_profile',{image}),
+        onMutate: async ({image,username}) => {
             //Cancelamos las queries en curso
             await queryClient.cancelQueries(['user'])
-            await queryClient.cancelQueries(['channel',args.username])
+            await queryClient.cancelQueries(['channel',username])
             //capturamos el estado actual y lo guardamos para uso en caso de error poder volver luego a donde estaba
             const prev1 = queryClient.getQueryData(['user'])
-            const prev2 = queryClient.getQueryData(['channel',args.username])
+            const prev2 = queryClient.getQueryData(['channel',username])
             //Se setea el estado en el canche con la informacion nueva antes de que esta se envie al servidor
-            queryClient.setQueryData(['user'],(oldData)=>{
-                return{
-                    ...oldData,
-                    data: {...oldData.data,...args.data}
-                }
-            })
-            queryClient.setQueryData(['channel',args.username],(oldData)=>{
-                return{
-                    ...oldData,
-                    data: {...oldData.data,...args.data}
-                }
-            })
+            queryClient.setQueryData(['user'], oldData => ({ ...oldData, data: {...oldData.data, image}}) )
+            queryClient.setQueryData(['channel',username],  oldData => ({ ...oldData, data: {...oldData.data, image}}) )
             //Retornamos los estados pasados para su uso en caso de que sea necesario
-            return { prev1, prev2, args }
+            return { prev1, prev2, username }
         },
         onError:(err, args, context)=>{
             //En caso de error se hace un rollback al estado anterior
             queryClient.setQueryData(['user'],context.prev1)
-            queryClient.setQueryData(['channel',username],context.prev2)
+            queryClient.setQueryData(['channel',context.username],context.prev2)
         },
         onSettled: (data, err, args, context) =>{
             //Se actualizan las queries correspondientes en caso de si sale bien o no
             queryClient.invalidateQueries(['user'])
-            queryClient.invalidateQueries(['channel',context.args.username])
+            queryClient.invalidateQueries(['channel',context.username])
         },
     })
 }
 
 const useUploadImage = () => useMutation({ 
-    mutatationFn: image => cloudinaryAxios.post(`/image`,{
-        file: image.url,
-        ...image.params
+    mutationFn: ({image,params}) => cloudinaryAxios.post(`/image`,{
+        file: image,
+        ...params
     })
 })
 
@@ -129,10 +122,6 @@ const useUploadVideo = () => useMutation({
     mutationFn: video => cloudinaryAxios.post(`/video`,{
         file: video
     })
-})
-
-const useCloudinarySignature = () => useMutation({
-    mutatationFn: params => myApi.post('/signature',params)
 })
 
 
@@ -148,5 +137,5 @@ export {
     useSubscribe,
     useUpdateUserData,
     useUploadImage,
-    useUploadVideo
+    useUploadVideo,
 }

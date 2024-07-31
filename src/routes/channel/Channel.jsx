@@ -142,7 +142,7 @@ export default function Channel() {
                     image={imageFile}
                     reset={resetForm()}
                     setImageFile={setImageFile}
-                    usernameChannel={params.username}
+                    username={params.username}
                 />
                 ,document.body
             )

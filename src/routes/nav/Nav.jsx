@@ -156,7 +156,7 @@ export default function Nav() {
                             }
                           }
                         )
-                    }>
+                      }>
                       <img src={logoutIcon} alt="" name="logout"/>
                       Log Out
                   </li>

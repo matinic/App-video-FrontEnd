@@ -2,7 +2,7 @@ import style from "./ProfileImage.module.css"
 import {useEffect, useRef, useState} from "react"
 import {useUploadImage, useUpdateUserData } from "../../hooks/mutationHooks"
 
-export default function ProfileImage({image,closeModal,reset,setImageFile,username}){
+export default function ProfileImage({image,closeModal,username}){
     const profile = useRef()
     const container = useRef()
     const circle = useRef()
@@ -11,6 +11,13 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
     const containerRect = useRef({})
     //Meididas originales de la imagen 
     const imageDimensions = useRef()
+    
+    const inputFile = useRef({
+        img: '',
+        width: null,
+        height: null,
+    })
+
     const [imgPositionX,setImgPositionX] = useState({
         transform: '-50%',
         left: '50%'
@@ -30,6 +37,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
         width: 0,
         height: 0,
     })
+
     const zoom = (e)=>{
         getCircleBounds()
         const imageRect = profile.current.getBoundingClientRect()//medidas actuales
@@ -48,6 +56,7 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             }
         return
     }
+
     useEffect(()=>{
         const imageRect = profile.current.getBoundingClientRect()//medidas actuales
         //Posicion de la imagen respecto del contenedor sin mover con el mouse
@@ -377,28 +386,29 @@ export default function ProfileImage({image,closeModal,reset,setImageFile,userna
             <div className={style.modalContainer}>
                 <div className={style.modalImageContainer} ref={container}>
                     <img
-                        src={image}
+                        src={imageFile || image}
                         ref={profile}
                         onMouseDown={grabImage}
                         draggable="false"
-                        style={
-                            {
-                                transform: `translate(${imgPositionX.transform},${imgPositionY.transform})`,
-                                left: imgPositionX.left,
-                                top: imgPositionY.top,
-                                height: imageSize.height,
-                                width: imageSize.width,
-                            }
-                        }    
+                        style={{
+                            transform: `translate(${imgPositionX.transform},${imgPositionY.transform})`,
+                            left: imgPositionX.left,
+                            top: imgPositionY.top,
+                            height: imageSize.height,
+                            width: imageSize.width,
+                        }}    
                     />
                     <div className={style.backgroundMask}></div>
                     <div className={style.circle} ref={circle}></div>
                 </div>
+                 
+                 <input type="file" ref={inputFile} onChange={loadImage} style={{display: 'none'}} />
                 <div className={style.buttonsContainer}>
                     <button name="zoomin" onClick={zoom}>Zoom +</button>
                     <button name="zoomout" onClick={zoom}>Zoom -</button>
+                    <button name="zoomout" onClick={zoom}>upload image</button>
                     <button onClick={changeUserAvatar}>Accept</button>
-                    <button onClick={()=> {closeModal(false); reset(); setImageFile(null)}}>Cancel</button>
+                    <button onClick={()=> {closeModal(false); setImageFile(null)}}>Cancel</button>
                 </div>
             </div>
         </div>

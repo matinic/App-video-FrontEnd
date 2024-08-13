@@ -7,12 +7,7 @@ export default function Videos() {
 
 const {
   data,
-    error,
     fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
 } = useAllVideos()
 const allVideos = data?.pages
 

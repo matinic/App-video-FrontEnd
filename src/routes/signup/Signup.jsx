@@ -1,11 +1,9 @@
 import React,{ useEffect, useState, useRef} from 'react'
 import { useNavigate } from 'react-router-dom'
-import useSignup from "../../hooks/useSignup"
+import { useSignup } from "../../hooks/mutationHooks"
 import style from  "./Signup.module.css"
 import show from "../../assets/show-eye.svg"
 import hide from "../../assets/hide-eye.svg"
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 export default function Signup() {
 
 const navigate = useNavigate()

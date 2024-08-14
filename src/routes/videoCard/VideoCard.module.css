@@ -1,9 +1,9 @@
-
 .videoCard{
     cursor: pointer;
-}
-.videoCard[data-pointer="none"]{
-    pointer-events: none;
+    position: relative;
+    h4{
+        word-break: break-word;
+    }
 }
 .thumbnail{
     width: 100%;
@@ -12,20 +12,6 @@
     border-radius: 10px;
 }
 
-.videoInfo{
-    display: flex;
-}
-.videoText{
-    display: flex;
-    flex-direction: column;
-    margin-left:10px;
-    flex-grow: 1;
-    min-width: 0;
 
-}
-.videoText h4{
-    overflow-wrap: break-word;
-    margin: 0px;
-}
 
 

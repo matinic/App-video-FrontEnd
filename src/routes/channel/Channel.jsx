@@ -72,7 +72,8 @@ if(channelSuccess) return (
             image
             subscriptions
             editable
-        ></ChannelCard>
+            large
+        />
 
         {/* Menu showing videos ana channel subscriptions*/}
         <ul className={style.channelMenu} ref={menu}>
@@ -101,8 +102,11 @@ if(channelSuccess) return (
         <div className={style.viewsContainer} data-selected={"#public" === hashRoute}>
             {
             channel?.data?.videos
-                ?.filter(vid => vid.published)
-                ?.map(vid => <VideoCard video={vid} key={vid.id}/>)
+                ?.map(vid =>
+                    <VideoCard video={vid} key={vid.id}>
+                        {vid.title}
+                    </VideoCard>
+                )
             }
         </div>  
 
@@ -113,14 +117,20 @@ if(channelSuccess) return (
                 {
                 user?.data?.videos
                     ?.filter(vid => !vid.published)
-                    ?.map(vid => <VideoCard video={vid} key={vid.id}/>)
+                    ?.map(vid =>
+                        <VideoCard video={vid} key={vid.id}>
+                            {vid.title}
+                        </VideoCard>)
                 }
             </div>
 
             <div className={style.viewsContainer} data-selected={"#liked" === hashRoute}>
                 {
                 likedVideos?.data
-                    ?.map(vid => <VideoCard showData video={vid} key={vid.id}/>)
+                    ?.map(vid =>
+                        <VideoCard showData video={vid} key={vid.id}>
+                            {vid.title}
+                        </VideoCard>)
                 }
             </div>
 
@@ -128,7 +138,7 @@ if(channelSuccess) return (
                 {
                 subscriptions?.data
                     ?.map(channel =>
-                           <ChannelCard
+                        <ChannelCard
                             key = {channel.id}
                             data = {channel}
                             subscribe
@@ -136,7 +146,8 @@ if(channelSuccess) return (
                             image
                             subscriptions
                             navigate
-                           ></ChannelCard>
+                            large
+                        />
                     )
                 }
             </div>

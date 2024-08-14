@@ -1,12 +1,56 @@
-.profileImage {
-    vertical-align: middle;
-    height: 100px;
-    width: 100px;
+.mainContainer{
+    display: flex;
+    width: 100%;
 }
-.profileImage img{
+[data-size="small"]{
+    gap: 10px;
+    .profileImage{
+        flex-shrink: 0;
+        position: relative;
+        height: 40px;
+        width: 40px;
+    }
+    .nameContainer{
+        gap: 0px;
+        button{
+            padding: 5px 15px;
+            font-size: 0.7rem;
+        }
+        h1{
+            margin: 0px;
+            font-size: 1rem;
+            font-weight:normal;
+        }
+        p{
+            margin: 0px;
+            font-size: 0.8rem;
+            font-weight:normal;
+            padding: 0px;
+        }
+        h4{
+            margin: 0px;
+            word-break: break-word;
+        }
+    }
+}
+[data-size="large"]{
+    gap: 20px;
+    .profileImage {
+        position: relative;
+        height: 100px;
+        width: 100px;
+    }
+    .nameContainer{
+        button{
+            padding: 5px 25px;
+            font-size: 0.8rem;
+        }
+    }
+}
+.profileImage img {
     border-radius: 50%;
-    height: 100px;
-    width: 100px;
+    height: 100%;
+    width: 100%;
     object-fit: cover;
 }
 .profileImage[data-editable="true"]:hover{
@@ -19,22 +63,19 @@
     position: absolute;
     display: grid;
     place-items: center;
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
     font-size: 2em;
     pointer-events: none;
 }
-span[data-navigate="true"]:hover, h1[data-navigate="true"]:hover{
+span[data-navigate = "true"]:hover,
+h4[data-navigate = "true"]:hover,
+h1[data-navigate="true"]:hover{
     cursor: pointer;
 }
-.channelHeader{
-    display: flex;
-    gap: 25px;
-    padding: 25px 25px 25px 0px;
-    width: max-content;
-}
+
 .nameContainer{
     display: flex;
     flex-flow: column;
@@ -43,10 +84,10 @@ span[data-navigate="true"]:hover, h1[data-navigate="true"]:hover{
 .nameContainer h1{
     margin: 0px;
     font-size: 2.5rem;
-    padding: 0px;
 }
 .nameContainer p{
     margin: 0px;
+    padding: 0px;
     color: white;
     font-style: italic; 
 }
@@ -55,9 +96,7 @@ span[data-navigate="true"]:hover, h1[data-navigate="true"]:hover{
     text-align: center;
     background-color: black;
     cursor: pointer;
-    padding: 5px 25px;
     border-radius: 30px;
-    font-size: 0.8rem;
     border: 1px solid;
     transition: background 0.25s;
 }
@@ -66,7 +105,6 @@ button[data-subscribed="true"],
     background-color: gray;
     cursor: pointer
 }
-
 .followers{
     cursor:pointer
 }

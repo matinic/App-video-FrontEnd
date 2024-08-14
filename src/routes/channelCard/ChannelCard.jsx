@@ -1,4 +1,4 @@
-import React,{useState, useRef } from 'react'
+import React,{useState, useRef, useEffect, createElement } from 'react'
 import imageDefault from "../../assets/profile-image.png"
 import style from "./ChannelCard.module.css"
 import { useParams, useNavigate } from 'react-router-dom'
@@ -7,14 +7,15 @@ import { useSubscribe } from '../../hooks/mutationHooks'
 import { createPortal } from 'react-dom'
 import Subscriptors from '../subscriptors/Subscriptors'
 
-
-export default function ChannelCard({data,...show}) {
+export default function ChannelCard({data,children,...show}) {
 
 const [followersModal,setFollowersModal] = useState(false)
 
 const [modalProfileImg, setModalProfileImg] = useState(false)
 
 const [imageFile,setImageFile] = useState()
+
+const [size, setSize] = useState("large")
 
 const navigate = useNavigate()
 
@@ -38,17 +39,23 @@ const goToChannel = ()=>{
     navigate(`/channel/${data.username}`)
 }
 
+useEffect(()=>{
+    if(show.small) setSize("small")
+    if(show.normal) setSize("medium")
+    if(show.large) setSize("large")
+},[])
+
 return (
-    <span className={style.channelHeader}>
+    <span className={ style.mainContainer}  data-size = { size }>
 
         {/*Profile image of the channel */}
         {
         show.image &&
             <span 
                 className = { style.profileImage }
-                data-navigate = { show.navigate }
                 onClick = { show.navigate && goToChannel }
                 data-editable = { show.editable }
+                data-navigate = { show.navigate }
             >
                 <img
                     src = { data.image || imageDefault }
@@ -70,13 +77,21 @@ return (
         }
 
        <span className={style.nameContainer}>
+            <h4
+                onClick={show.navigate && goToChannel}
+                data-navigate = {show.navigate}
+            >
+                {children}
+            </h4>
             {/*Channel's name*/}
-            <h1 
-                onClick = { show.navigate && goToChannel }
-                data-navigate = { show.navigate }
+            {
+            <h1
+                onClick={show.navigate && goToChannel}
+                data-navigate = {show.navigate}
             >
                 {data.username}
             </h1>
+            }
 
             {/*Susbcriptors counter*/}
             {

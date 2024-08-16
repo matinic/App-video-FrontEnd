@@ -18,10 +18,7 @@
     border-radius: 25px;
     transition: background .20s ease;
 }
-.channelMenu a:hover{
-    background-color: rgb(124, 124, 124);
-    cursor: pointer;
-}
+
 a[data-selected="true"]{
     background-color: black
 }

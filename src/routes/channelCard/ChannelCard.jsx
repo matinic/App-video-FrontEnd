@@ -23,6 +23,8 @@ const {data:user} = useUser()
 
 const {mutate:mutateSubscribe} = useSubscribe()
 
+const isChannelOwner = user?.data?.username === data.username
+
 const isSubscribed = user?.data?.subscriptions?.includes(data.id)
 
 const loadImage = (e)=>{
@@ -39,23 +41,27 @@ const goToChannel = ()=>{
     navigate(`/channel/${data.username}`)
 }
 
+const showModal = () => setFollowersModal(prev => !prev)
+
 useEffect(()=>{
     if(show.small) setSize("small")
-    if(show.normal) setSize("medium")
     if(show.large) setSize("large")
+    if(show.row) setSize("row")
 },[])
 
 return (
-    <span className={ style.mainContainer}  data-size = { size }>
-
+    <div 
+        className = { style.mainContainer }
+        data-size = { size }
+        data-navigate = { show.navigate }
+    >
         {/*Profile image of the channel */}
         {
         show.image &&
             <span 
                 className = { style.profileImage }
                 onClick = { show.navigate && goToChannel }
-                data-editable = { show.editable }
-                data-navigate = { show.navigate }
+                data-editable = {  isChannelOwner && show.editable }
             >
                 <img
                     src = { data.image || imageDefault }
@@ -67,63 +73,65 @@ return (
         modalProfileImg &&
             createPortal(
                 <ProfileImage
-                    closeModal={setModalProfileImg}
-                    image={imageFile}
-                    reset={resetForm}
-                    username={params.username}
+                    closeModal = { setModalProfileImg }
+                    image = { imageFile }
+                    reset = { resetForm }
+                    username = { params.username }
                 />,
                 document.body
             )
         }
 
-       <span className={style.nameContainer}>
-            <h4
-                onClick={show.navigate && goToChannel}
-                data-navigate = {show.navigate}
-            >
-                {children}
-            </h4>
+        <div
+            className = { style.nameContainer }
+        >
+            {/*Whatever is necesary to introduce in the component*/}
+            { children }
             {/*Channel's name*/}
-            {
-            <h1
-                onClick={show.navigate && goToChannel}
-                data-navigate = {show.navigate}
-            >
-                {data.username}
-            </h1>
-            }
+            <div>
+                {
+                show.title && 
+                    <h1
+                        onClick = { show.navigate && goToChannel } 
+                    >
+                        { data.username }
+                    </h1>
+                }
 
-            {/*Susbcriptors counter*/}
-            {
-            show.subscriptions &&
-                <p
-                    onClick={ ()=> setFollowersModal(prev => !prev) }
-                    className={ style.followers }
-                >
-                    {data.followersCount} Subscriptors
-                </p>
-            }
+                {/*Susbcriptors counter*/}
+                {
+                show.subscribers &&
+                    <p
+                        onClick={ show.subscribersModal && showModal }
+                        className={ show.subscribersModal && style.subscribers }
+                    >
+                        { data.followersCount } subscribers
+                    </p>
+                }
 
-            {/* Followers list modal -Show the followers list of the channel*/}
-            {
-            followersModal &&
-                createPortal(
-                    <Subscriptors closeButton = {setFollowersModal}/>,
+                {/* Followers list modal -Show the followers list of the channel*/}
+                {
+                followersModal &&
+                    createPortal
+                    (
+                    < Subscriptors
+                        closeButton = { setFollowersModal }
+                    />,
                     document.body 
-                )
-            }
-
+                    )
+                }
+            </div>
             {/*Suscribe button*/}
             {
-            show.subscribe &&
+            show.subscribe && !isChannelOwner &&
                 <button
-                    onClick={()=>mutateSubscribe(data.id)}
-                    data-subscribed={isSubscribed}
+                    onClick = { () => mutateSubscribe( data.id ) }
+                    data-subscribed = { isSubscribed }
                 >
-                    {isSubscribed ? "subcribed" : "subscribe"}
+                    { isSubscribed ? "subcribed" : "subscribe" }
                 </button>
             }
-        </span>
-    </span> 
+        </div>
+    </div> 
   )
 }

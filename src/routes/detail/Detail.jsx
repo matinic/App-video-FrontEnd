@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useVideo, useUser } from '../../hooks/queryHooks'
 import style from "./Detail.module.css"
-import imageDefault from "../../assets/profile-image.png"
-import { useLikeVideo, useSubscribe, usePublish } from '../../hooks/mutationHooks'
-import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import { usePublish } from '../../hooks/mutationHooks'
 import SouthIcon from '@mui/icons-material/South';
 import EditIcon from '@mui/icons-material/Edit';
 import { Portal } from '@mui/material';
 import Edit from '../edit/Edit';
+import ChannelCard from '../channelCard/channelCard';
+import LikesBar from '../likesBar/LikesBar';
 
 export default function Detail() {
 
@@ -18,40 +17,21 @@ const params = useParams()
 //Query that get all video information, included the channel 
 const {data:video, isError, isLoading} = useVideo(params.id)
 
-//Gets the user info from the video query (user who is owner of the video)
-const channel = video?.data?.user
-
-//from the video query 
-const navigate = useNavigate()
-
-//Logged user
 const {data:user} = useUser()
 
-//Verifies if the logged user is sunsdcribed to the cannel
-//?This can be transform to a hook
-const isSubscribed = user?.data?.subscriptions?.includes(channel?.id) 
-
-const {mutate:mutateLike} = useLikeVideo(video?.data?.id)
-
-//Mutation that of subscribe action onto the channel
-const {mutate:subscribe} = useSubscribe()
-
-const isLiked = user?.data?.likedVideos.includes(video?.data?.id)
-const isDisliked = user?.data?.dislikedVideos.includes(video?.data?.id)
-
 const [showEditVideo,setShowEditVideo] = useState(true)
+
+const isAuthorized = video?.data.user.username !== user?.data?.username
+
+const [expandDescription,setExpandDescription] = useState(false)
+
+const {mutate:publish} = usePublish(video?.data?.id)
 
 React.useEffect(()=>{
   return ()=>{
     setShowEditVideo(false)
   }
 },[])
-
-const isAuthorized = channel?.username !== user?.data?.username
-
-const [expandDescription,setExpandDescription] = useState(false)
-
-const {mutate:publish} = usePublish(video?.data?.id)
 
 if(isLoading) {
   return(
@@ -95,62 +75,21 @@ return (
             ></Edit>}></Portal>
         }
         <h2 className={style.videoTitle}>{video.data?.title}</h2> 
-        
-        {/*Video title*/}
-
         <div className={style.channelContainer}>
-
-          {/*Link to the main channel*/} 
-            <Link
-              to={`/channel/${channel?.username}`}
-              className={style.channel}
-            >
-              <div className={style.profileImage}>
-                
-                <img
-                  src={channel?.image || imageDefault}
-                />
-
-              </div>
-              <span name="channel">
-                {/*Channel name */}
-                <h3>{channel?.username}</h3>
-                {/*channel subscriptors counter*/}
-                <p>{channel?.followersCount} susbcriptors</p>
-              </span>
-            </Link>
-
-            {
-             isAuthorized &&
-              <>
-                {/*Subscribe button*/}
-                <button
-                  className={style.subscribeButton}
-                  onClick={()=>subscribe(channel?.id)}
-                  data-subscribed={isSubscribed}
-                >
-                  {isSubscribed ? "subcribed" : "subscribe"}
-                </button>
-              </>
-            }
-
-            {/*Like and Dislike buttons */}
-            <div className={style.likeDislike}>
-              {/*Like button*/}
-                <div name="like" onClick={()=>mutateLike('like')} data-selected={isLiked}>
-                  <ThumbUpAltOutlinedIcon></ThumbUpAltOutlinedIcon>
-                  {video?.data?.likes}
-                </div>
-                <span></span>
-              {/*Dislike button*/}
-                <div name="dislike" onClick={()=>mutateLike('dislike')} data-selected={isDisliked}>
-                  <ThumbDownOutlinedIcon></ThumbDownOutlinedIcon>
-                  {video?.data?.dislikes}
-                </div>
-            </div>
-              
+          <ChannelCard
+            data = {video.data.user}
+            image
+            subscribers
+            center
+            subscribe
+            title
+            row
+            navigate
+          >
+          </ChannelCard>
+          <LikesBar video={video.data}></LikesBar>
         </div>
-
+         
         <pre
           className={style.videoDescription}
           data-expand={expandDescription}

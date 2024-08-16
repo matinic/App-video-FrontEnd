@@ -1,19 +1,12 @@
 import React,{useState, useRef,useEffect } from 'react'
-import imageDefault from "../../assets/profile-image.png"
 import style from "./Channel.module.css"
 import { useUser } from '../../hooks/queryHooks'
 import { useParams, Link, useNavigate, useLocation} from 'react-router-dom'
 import { useChannel, useLikedVideos, useSubscriptions, useFollowers } from '../../hooks/queryHooks'
-import { useSubscribe } from '../../hooks/mutationHooks'
-import { createPortal } from 'react-dom'
-import ProfileImage from '../profileImage/ProfileImage'
-import Subscriptors from '../subscriptors/Subscriptors'
 import VideoCard from '../videoCard/VideoCard'
-import ChannelCard from "../channelCard/ChannelCard.jsx"
+import ChannelCard from "../channelCard/channelCard.jsx"
 
 export default function Channel() {
-
-const [followersModal,setFollowersModal] = useState(false)
 
 const menu = useRef()
 
@@ -34,13 +27,7 @@ const {data:likedVideos} = useLikedVideos()
 
 const {data:subscriptions} = useSubscriptions()
 
-const {data:followers} = useFollowers(params.username)
-
-const {mutate:subscribe} = useSubscribe()
-
 const isChannelOwner = user?.data?.username === channel?.data?.username
-
-const formImage = useRef()
 
 useEffect(()=>{
    const allowedRoutes = ["#public","#unpublished","#liked","#subscriptions"]
@@ -53,7 +40,6 @@ useEffect(()=>{
     else {
         navigate("#public",{replace: true})
     }
-
 },[hashRoute])
 
 if(channelLoading) return (<h3 className={style.channelContainer}>Loading...</h3>)
@@ -65,12 +51,12 @@ if(channelSuccess) return (
 
         {/*Profile image of the channel */}
         <ChannelCard
-            key = {channel?.data?.id}
             data = {channel?.data}
-            subscribe = {!isChannelOwner}
+            subscribe
             title
             image
-            subscriptions
+            subscribers
+            subscribersModal
             editable
             large
         />
@@ -102,10 +88,14 @@ if(channelSuccess) return (
         <div className={style.viewsContainer} data-selected={"#public" === hashRoute}>
             {
             channel?.data?.videos
-                ?.map(vid =>
-                    <VideoCard video={vid} key={vid.id}>
-                        {vid.title}
-                    </VideoCard>
+                ?.map( vid =>
+                    <VideoCard
+                        key={ vid.id }
+                        data = { vid }
+                        title
+                        video
+                        navigate
+                    />
                 )
             }
         </div>  
@@ -117,20 +107,44 @@ if(channelSuccess) return (
                 {
                 user?.data?.videos
                     ?.filter(vid => !vid.published)
-                    ?.map(vid =>
-                        <VideoCard video={vid} key={vid.id}>
-                            {vid.title}
-                        </VideoCard>)
+                    ?.map( vid =>
+                        <VideoCard
+                            key={ vid.id }
+                            data = { vid }
+                            title
+                            navigate
+                            video
+                        />
+                    )
                 }
             </div>
 
             <div className={style.viewsContainer} data-selected={"#liked" === hashRoute}>
                 {
                 likedVideos?.data
-                    ?.map(vid =>
-                        <VideoCard showData video={vid} key={vid.id}>
-                            {vid.title}
-                        </VideoCard>)
+                    ?.map( vid =>
+                        <div key = {vid.id}>
+                            <VideoCard
+                                data = { vid }
+                                navigate
+                                video
+                            />
+                            <ChannelCard
+                                data = { vid.user }
+                                title
+                                image
+                                navigate
+                                small
+                                horizontal
+                            >
+                            <VideoCard
+                                data = { vid }
+                                title
+                                navigate  
+                            />
+                            </ChannelCard>
+                      </div>
+                    )
                 }
             </div>
 
@@ -144,7 +158,8 @@ if(channelSuccess) return (
                             subscribe
                             title
                             image
-                            subscriptions
+                            subscribers
+                            subscribersModal
                             navigate
                             large
                         />

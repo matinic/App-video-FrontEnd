@@ -1,9 +1,6 @@
 .videoCard{
     cursor: pointer;
     position: relative;
-    h4{
-        word-break: break-word;
-    }
 }
 .thumbnail{
     width: 100%;
@@ -11,7 +8,15 @@
     background: black;
     border-radius: 10px;
 }
-
-
+.videoTitle{
+    margin: 0px;
+    word-break: break-word;
+}
+[data-navigate]{
+    video:hover,
+    h4:hover{
+        cursor: pointer;
+    }
+}
 
 

@@ -22,35 +22,11 @@
     -webkit-line-clamp: 2; 
 }
 .channelContainer{
-    width: 100%;
     display: flex;
-    height: 50px;
-    gap: 15px;
     align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
-.channel{
-    height: 100%;
-    display: flex;
-    gap: 15px;
-    text-decoration: none;
-    color: white;
-}
-.channel span{
-    display: center;
-    justify-content: center;
-}
-.channel span h3{
-    font-size: 1.25rem;
-    margin: 0px;
-    padding: 0px;
-}
-.channel span p{
-    font-size: 0.75rem;
-    margin: 0px;
-    color: lightgray;
-    font-style: italic;
-}
-
 .subscribeButton{
     background-color: black;
     border-radius: 30px;
@@ -64,41 +40,6 @@ button[data-published="true"],
     background-color: gray;
     cursor: pointer
 }
-.likeDislike {
-    position:absolute;
-    right: 0px;
-    display: flex;
-    background: black;
-    align-items: center;
-    border-radius: 30px;
-    border: 1px solid;
-}
-.likeDislike div{
-    padding: 8px 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.likeDislike div[name="like"]{
-    border-radius: 30px 0px 0px 30px;
-}
-.likeDislike div[name="dislike"]{
-    border-radius: 0px 30px 30px 0px;
-}
-.likeDislike div:hover,
-.likeDislike div[data-selected="true"]{
-    background-color: gray;
-}
-.likeDislike span{
-    position: absolute;
-    left: 50%;
-    width: 2px;
-    height: 20px;
-    background-color: gray;
-}
-
 .videoDescription{
     color: lightgray;
     min-height: 20px;

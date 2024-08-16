@@ -6,6 +6,7 @@ import ChannelCard from "../channelCard/channelCard"
 export default function Videos() {
 
 const { data, fetchNextPage } = useAllVideos()
+
 const allVideos = data?.pages
 
 return (
@@ -15,15 +16,24 @@ return (
       allVideos?.map( group =>
           group?.data?.videos.map( vid =>               
             <div key = {vid.id}>
-              <VideoCard video = {vid} title videoTitle/>
+              <VideoCard
+                data = { vid }
+                navigate
+                video
+              />
               <ChannelCard
-                  data = {vid.user}
-                  title
-                  image
-                  navigate
-                  small
+                data = { vid.user }
+                title
+                image
+                navigate
+                small
+                horizontal
               >
-               {vid.title}
+                <VideoCard
+                  data = { vid }
+                  title
+                  navigate  
+                />
               </ChannelCard>
             </div>
         ))

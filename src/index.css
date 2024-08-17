@@ -32,12 +32,14 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-body{
+body, h4{
   margin: 0px;
 }
 a{
-  text-decoration: none;;
+  text-decoration: none;
+  color: white
 }
+
 
 @media (prefers-color-scheme: light) {
   :root {

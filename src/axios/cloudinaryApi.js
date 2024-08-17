@@ -4,11 +4,11 @@ import { myApi } from './myApi'
 const CLOUD_NAME= 'dciywcxvp' 
 const API_KEY= '566932643731173' 
 
-const cloudinaryAxios = axios.create({
+const cloudinaryApi = axios.create({
     baseURL:  `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/`
 })
 
-cloudinaryAxios.interceptors.request.use( async config => {
+cloudinaryApi.interceptors.request.use( async config => {
     try {
         const {file, ...paramsToSign} = config.data
         const cloud = await myApi.post('/signature',paramsToSign)
@@ -20,5 +20,5 @@ cloudinaryAxios.interceptors.request.use( async config => {
 })
 
 export {
-    cloudinaryAxios,
+    cloudinaryApi,
 }

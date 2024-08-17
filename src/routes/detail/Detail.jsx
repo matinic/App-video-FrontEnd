@@ -1,83 +1,64 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'
-import { useVideo, useUser } from '../../hooks/queryHooks'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useVideo } from '../../hooks/queryHooks'
 import style from "./Detail.module.css"
-import { usePublish } from '../../hooks/mutationHooks'
-import SouthIcon from '@mui/icons-material/South';
-import EditIcon from '@mui/icons-material/Edit';
-import { Portal } from '@mui/material';
-import Edit from '../edit/Edit';
 import ChannelCard from '../channelCard/channelCard';
+import { useUser } from '../../hooks/queryHooks'
 import LikesBar from '../likesBar/LikesBar';
+import EditVideoButtons from '../editVideoButtons/editVideoButtons';
+import SouthIcon from '@mui/icons-material/South';
+import * as mutate from "../../hooks/mutationHooks"
+
 
 export default function Detail() {
 
 const params = useParams()
 
-//Query that get all video information, included the channel 
-const {data:video, isError, isLoading} = useVideo(params.id)
+const {data:video, isError, isLoading, isSuccess } = useVideo(params.id)
 
 const {data:user} = useUser()
 
-const [showEditVideo,setShowEditVideo] = useState(true)
+const navigate = useNavigate()
 
-const isAuthorized = video?.data.user.username !== user?.data?.username
+const isVideoOwner = video?.data?.user?.username === user?.data?.username
 
 const [expandDescription,setExpandDescription] = useState(false)
 
-const {mutate:publish} = usePublish(video?.data?.id)
 
-React.useEffect(()=>{
-  return ()=>{
-    setShowEditVideo(false)
-  }
-},[])
-
-if(isLoading) {
-  return(
-    <h1>
+if(isLoading) return (
+    <h3 className={style.detailContainer}>
       Loading...
-    </h1>
-  )
-}
-
-if(isError) return(
-    <h1>Something went wrong</h1>
+    </h3>
 )
 
-return (
-    <div className={style.detailContainer}>
+if(isError) return (
+  <h2 className={style.detailContainer}>
+    NOT FOUND 404 <span onClick={()=> navigate("/")}>return home</span>
+  </h2>
+)
 
+if(isSuccess) return (
+    <div className={style.detailContainer}>
         {/*Video player*/}
-        <video src={video?.data?.url} controls className={style.videoPlayer}>
+        <video
+          src = { video?.data.url }
+          className = { style.videoPlayer }
+          controls
+        >
         </video>
         {
-          !isAuthorized &&
-          <div className={style.videoOptions}>
-            <button className={style.edit} onClick={()=>setShowEditVideo(!showEditVideo)}>
-              <EditIcon fontSize='medium'></EditIcon>
-                <>Edit</>
-            </button>
-            <button 
-              onClick={()=>publish(!video?.data?.published)}
-              data-published={!video?.data?.published}
-            >
-              hide
-            </button>
-          </div>
+        isVideoOwner &&
+          <EditVideoButtons
+            data = { video?.data }
+            edit
+            hide
+            delete
+          />
         }
-        {
-          showEditVideo && <Portal children={
-            <Edit 
-              close ={setShowEditVideo}
-              videoInfo ={video?.data}
-              isOpen = {showEditVideo}
-            ></Edit>}></Portal>
-        }
-        <h2 className={style.videoTitle}>{video.data?.title}</h2> 
+        <h2 className={style.videoTitle}>{video?.data.title}</h2> 
         <div className={style.channelContainer}>
           <ChannelCard
-            data = {video.data.user}
+            data = {video?.data.user}
             image
             subscribers
             center
@@ -87,7 +68,7 @@ return (
             navigate
           >
           </ChannelCard>
-          <LikesBar video={video.data}></LikesBar>
+          <LikesBar video={video?.data}></LikesBar>
         </div>
          
         <pre

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import  { myApi } from '../axios/myApi'
-import { cloudinaryAxios } from '../axios/cloudinary'
+import { cloudinaryApi } from '../axios/cloudinaryApi'
 
 const useSignin = () => useMutation({
     mutationFn: userInfo => myApi.post('/signin',userInfo),
@@ -27,9 +27,15 @@ const useCreateVideo = () => useMutation({
     mutationFn: videoInfo => myApi.post('/create',videoInfo),
 })
 
-const useDeleteVideo = () => useMutation({
-    mutationFn: videoId => myApi.delete(`/delete?id=${videoId}`)
-})
+const useDeleteVideo = () => {
+        const queryClient = useQueryClient()
+        return useMutation({
+        mutationFn: videoId => myApi.delete(`/delete?id=${videoId}`),
+        onSuccess: (res,videoId) => {
+            queryClient.invalidateQueries(['video',videoId])
+        }
+    })
+}
 
 const useEditVideo = () => {
     const queryClient = useQueryClient()
@@ -112,18 +118,17 @@ const useUpdateUserData = () => {
 }
 
 const useUploadImage = () => useMutation({ 
-    mutationFn: ({image,params}) => cloudinaryAxios.post(`/image`,{
+    mutationFn: ({image,params}) => cloudinaryApi.post(`/image`,{
         file: image,
         ...params
     })
 })
 
 const useUploadVideo = () => useMutation({
-    mutationFn: video => cloudinaryAxios.post(`/video`,{
+    mutationFn: video => cloudinaryApi.post(`/video`,{
         file: video
     })
 })
-
 
 export {
     useSignin,

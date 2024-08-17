@@ -76,6 +76,15 @@
         width: 100px;
     }
     .nameContainer{
+        flex-grow: 1;
+        div{
+            display: flex;
+            flex-direction: column;
+            h1{
+                font-size: clamp(1rem,2rem,3.5rem);
+                max-width: 100%;
+            }
+        }
         button{
             padding: 5px 25px;
             font-size: 0.8rem;

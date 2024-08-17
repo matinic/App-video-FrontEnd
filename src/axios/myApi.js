@@ -1,16 +1,15 @@
 import axios from 'axios'
-import chalk from 'chalk';
 
-const requireAuthRoutes = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like','/signature','/update_profile']
+const whiteList = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like','/signature','/update_profile','/subscriptions','/detail']
 
 const myApi = axios.create({
     baseURL: 'http://localhost:3001/',
 })
 
 myApi.interceptors.request.use(config => {
-    console.log(chalk.bgBlue(config.url))
+    // console.log(chalk.bgBlue(config.url))
     const relativeRoute = config.url.split('?')
-    const isRequiredAuthRoute = requireAuthRoutes.includes(relativeRoute[0])
+    const isRequiredAuthRoute = whiteList.includes(relativeRoute[0])
     if(isRequiredAuthRoute){
         const accessToken = localStorage.getItem('accessToken')
         if (accessToken) {
@@ -23,7 +22,7 @@ myApi.interceptors.request.use(config => {
 
 myApi.interceptors.response.use(    
     response => {
-        console.log(chalk.bgGreen.black(response.config.url))
+        // console.log(chalk.bgGreen.black(response.config.url))
         return response
     }, 
     async error => {
@@ -32,7 +31,7 @@ myApi.interceptors.response.use(
         if (error.response.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true
             try {
-                console.log(chalk.bgYellow.black('retrying'))
+                // console.log(chalk.bgYellow.black('retrying'))
                 const response = await myApi('/refresh')
                 const accessToken = response?.data?.accessToken
                 localStorage.setItem('accessToken', accessToken)

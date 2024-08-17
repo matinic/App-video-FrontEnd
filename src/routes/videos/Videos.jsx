@@ -7,13 +7,11 @@ export default function Videos() {
 
 const { data, fetchNextPage } = useAllVideos()
 
-const allVideos = data?.pages
-
 return (
     <div className={style.container}>
       <div className={style.allVideos}>
       {
-      allVideos?.map( group =>
+      data?.pages?.map( group =>
           group?.data?.videos.map( vid =>               
             <div key = {vid.id}>
               <VideoCard

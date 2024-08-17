@@ -6,6 +6,11 @@
     transform: translateX(-50%);
     max-width: 1000px;
 }
+h2.detailContainer span:hover{
+    text-decoration:underline; 
+    color: gray;
+    cursor: pointer
+}
 .videoPlayer{
     background-color: rgb(0, 0, 0) ;
     border-radius: 10px; 
@@ -103,3 +108,4 @@ button[data-published="true"],
     display: flex;
     gap: 10px;
 }
+

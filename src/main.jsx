@@ -17,7 +17,6 @@ import UploadVideo from './routes/create/UploadVideo';
 import Root from './routes/Root';
 import Detail from './routes/detail/Detail';
 import Channel from "./routes/channel/Channel.jsx"
-import Subscriptors from './routes/subscriptors/Subscriptors.jsx';
 
 const queryClient = new QueryClient()
 const router = createBrowserRouter([

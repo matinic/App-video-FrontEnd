@@ -15,22 +15,23 @@ return (
           group?.data?.videos.map( vid =>               
             <div key = {vid.id}>
               <VideoCard
-                data = { vid }
-                navigate
-                video
+                  data = { vid }
+                  navigate
+                  screen
               />
               <ChannelCard
-                data = { vid.user }
-                title
-                image
-                navigate
-                small
-                horizontal
+                  data = { vid.user }
+                  name
+                  image
+                  navigate
+                  small
+                  horizontal
               >
                 <VideoCard
-                  data = { vid }
-                  title
-                  navigate  
+                    data = { vid }
+                    title
+                    navigate
+                    small
                 />
               </ChannelCard>
             </div>

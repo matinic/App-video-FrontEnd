@@ -38,6 +38,11 @@ a[data-selected="true"]{
     text-decoration: underline;
     color: lightgrey
 }
+.channelAndLikedButton{
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
 
 @media (width <= 1300px){
     .viewsContainer{

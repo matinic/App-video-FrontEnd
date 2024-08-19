@@ -4,6 +4,11 @@ import { useUploadVideo, useCreateVideo } from "../../hooks/mutationHooks"
 import { useUser } from '../../hooks/queryHooks'
 import style from './UploadVideo.module.css'
 import { io, Manager } from "socket.io-client";
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Stack from '@mui/material/Stack';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function UploadVideo() {
 
@@ -99,8 +104,16 @@ useEffect(()=>{
                 <form onSubmit={uploadVideoHandler} className={style.formBody}>
                     <fieldset>
                         <legend>Upload your video</legend>
-
-                        <input type="file" onChange={fileHandler}/>
+                        <Button
+                          component="label"
+                          role={undefined}
+                          variant="contained"
+                          tabIndex={-1}
+                          startIcon={<CloudUploadIcon />}
+                        >
+                          Select File
+                          <input type="file" onChange={fileHandler} style={{display:"none"}}/>
+                        </Button>
                         <Error message={error?.url}/>
 
                         <label>Title</label>
@@ -138,11 +151,14 @@ useEffect(()=>{
                           </div>
                           <Error message={error?.published}/>
                         </fieldset>
-
-                        <button disabled={Object.keys(error).length}>OK</button>
                     
                         {
-                          isLoading ? <div>Uploading...</div> : null
+                          isLoading ?
+                            <Stack display={"flex"} gap={"5px"}>
+                              <LinearProgress variant="determinate"/>
+                              <Button variant="contained">Cancel</Button>
+                            </Stack>
+                            :  <button disabled={Object.keys(error).length}>OK</button>
                         }
                     </fieldset>
                 </form>

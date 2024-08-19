@@ -1,41 +1,34 @@
-import React,{useState, useRef, useEffect, createElement } from 'react'
+import React,{useState, useEffect, useRef } from 'react'
 import imageDefault from "../../assets/profile-image.png"
 import style from "./ChannelCard.module.css"
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useUser } from '../../hooks/queryHooks'
 import { useSubscribe } from '../../hooks/mutationHooks'
 import { createPortal } from 'react-dom'
 import Subscriptors from '../subscriptors/Subscriptors'
+import Editor from '../Editor/Editor'
 
-export default function ChannelCard({data,children,...show}) {
+export default function ChannelCard({ data, children, ...show}) {
 
 const [followersModal,setFollowersModal] = useState(false)
 
-const [modalProfileImg, setModalProfileImg] = useState(false)
-
-const [imageFile,setImageFile] = useState()
+const [open, setOpen] = React.useState(false);
 
 const [size, setSize] = useState("large")
 
 const navigate = useNavigate()
 
-const {data:user} = useUser()
+const {data:loggedUser} = useUser()
 
 const {mutate:mutateSubscribe} = useSubscribe()
 
-const isChannelOwner = user?.data?.username === data.username
+const isChannelOwner = loggedUser?.data?.username === data.username
 
-const isSubscribed = user?.data?.subscriptions?.includes(data.id)
+const isSubscribed = loggedUser?.data?.subscriptions?.includes(data.id)
 
-const loadImage = (e)=>{
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.onloadend = ()=>{
-        setImageFile(reader.result)
-        setModalProfileImg(true)
-    }
-    reader.readAsDataURL(file)
-}
+const handleOpen = () => setOpen(true);
+
+const handleClose = () => setOpen(false);
 
 const goToChannel = ()=>{
     navigate(`/channel/${data.username}`)
@@ -65,23 +58,14 @@ return (
             >
                 <img
                     src = { data.image || imageDefault }
-                    onClick = { show.editable && loadImage }
+                    onClick = { show.editable && handleOpen }
                 />
             </span>
         }
-        {
-        modalProfileImg &&
-            createPortal(
-                <ProfileImage
-                    closeModal = { setModalProfileImg }
-                    image = { imageFile }
-                    reset = { resetForm }
-                    username = { params.username }
-                />,
-                document.body
-            )
-        }
-
+        <Editor
+            open = { open }
+            onClose ={ handleClose }
+        />
         <div
             className = { style.nameContainer }
         >
@@ -90,7 +74,7 @@ return (
             {/*Channel's name*/}
             <div>
                 {
-                show.title && 
+                show.name && 
                     <h1
                         onClick = { show.navigate && goToChannel } 
                     >

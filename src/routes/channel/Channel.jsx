@@ -5,6 +5,7 @@ import { useParams, Link, useNavigate, useLocation} from 'react-router-dom'
 import { useChannel, useLikedVideos, useSubscriptions, useFollowers } from '../../hooks/queryHooks'
 import VideoCard from '../videoCard/VideoCard'
 import ChannelCard from "../channelCard/channelCard.jsx"
+import LikesBar from '../likesBar/LikesBar.jsx'
 
 export default function Channel() {
 
@@ -51,16 +52,16 @@ if(channelSuccess) return (
 
         {/*Profile image of the channel */}
         <ChannelCard
-            data = {channel?.data}
-            subscribe
-            title
+            data = { channel.data }
+            name
             image
+            horizontal
+            subscribe
             subscribers
             subscribersModal
             editable
-            large
         />
-
+        
         {/* Menu showing videos ana channel subscriptions*/}
         <ul className={style.channelMenu} ref={menu}>
             <Link to={"#public"} data-selected={"#public" === hashRoute}>
@@ -90,10 +91,10 @@ if(channelSuccess) return (
             channel?.data?.videos
                 ?.map( vid =>
                     <VideoCard
-                        key={ vid.id }
+                        key = { vid.id }
                         data = { vid }
                         title
-                        video
+                        screen
                         navigate
                     />
                 )
@@ -109,11 +110,11 @@ if(channelSuccess) return (
                     ?.filter(vid => !vid.published)
                     ?.map( vid =>
                         <VideoCard
-                            key={ vid.id }
+                            key = { vid.id }
                             data = { vid }
                             title
                             navigate
-                            video
+                            screen
                         />
                     )
                 }
@@ -127,23 +128,31 @@ if(channelSuccess) return (
                             <VideoCard
                                 data = { vid }
                                 navigate
-                                video
+                                screen
                             />
-                            <ChannelCard
-                                data = { vid.user }
-                                title
-                                image
-                                navigate
-                                small
-                                horizontal
-                            >
-                            <VideoCard
-                                data = { vid }
-                                title
-                                navigate  
-                            />
-                            </ChannelCard>
-                      </div>
+                            <div className={style.channelAndLikedButton}>
+                                <ChannelCard
+                                    data = { vid.user }
+                                    name
+                                    image
+                                    navigate
+                                    small
+                                    horizontal
+                                >
+                                    <VideoCard
+                                        data = { vid }
+                                        title
+                                        navigate
+                                        small
+                                    />
+                                </ChannelCard>
+                                <LikesBar
+                                    data = { vid }
+                                    like
+                                    small
+                                />
+                            </div>
+                        </div>
                     )
                 }
             </div>
@@ -151,17 +160,16 @@ if(channelSuccess) return (
             <div className={style.viewsContainer} data-selected={"#subscriptions" === hashRoute}>
                 {
                 subscriptions?.data
-                    ?.map(channel =>
+                    ?.map( channel =>
                         <ChannelCard
-                            key = {channel.id}
-                            data = {channel}
-                            subscribe
-                            title
+                            key = { channel.id }
+                            data = { channel }
+                            name
                             image
-                            subscribers
-                            subscribersModal
                             navigate
-                            large
+                            horizontal
+                            subscribe
+                            subscribers
                         />
                     )
                 }

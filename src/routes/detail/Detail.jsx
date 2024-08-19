@@ -7,8 +7,6 @@ import { useUser } from '../../hooks/queryHooks'
 import LikesBar from '../likesBar/LikesBar';
 import EditVideoButtons from '../editVideoButtons/editVideoButtons';
 import SouthIcon from '@mui/icons-material/South';
-import * as mutate from "../../hooks/mutationHooks"
-
 
 export default function Detail() {
 
@@ -23,7 +21,6 @@ const navigate = useNavigate()
 const isVideoOwner = video?.data?.user?.username === user?.data?.username
 
 const [expandDescription,setExpandDescription] = useState(false)
-
 
 if(isLoading) return (
     <h3 className={style.detailContainer}>
@@ -41,7 +38,7 @@ if(isSuccess) return (
     <div className={style.detailContainer}>
         {/*Video player*/}
         <video
-          src = { video?.data.url }
+          src = { video.data.url }
           className = { style.videoPlayer }
           controls
         >
@@ -49,33 +46,37 @@ if(isSuccess) return (
         {
         isVideoOwner &&
           <EditVideoButtons
-            data = { video?.data }
+            data = { video.data }
             edit
             hide
             delete
           />
         }
-        <h2 className={style.videoTitle}>{video?.data.title}</h2> 
+        <h2 className={style.videoTitle}>{video.data.title}</h2> 
         <div className={style.channelContainer}>
           <ChannelCard
-            data = {video?.data.user}
+            data = { video.data.user }
             image
             subscribers
             center
             subscribe
-            title
+            name
             row
             navigate
-          >
-          </ChannelCard>
-          <LikesBar video={video?.data}></LikesBar>
+          />
+          <LikesBar
+            data = { video.data }
+            like
+            dislike
+            counter
+          />
         </div>
          
         <pre
           className={style.videoDescription}
           data-expand={expandDescription}
         >
-          {`${video?.data?.description}`}
+          {`${video.data.description}`}
         </pre>
         <p 
           className={style.expandButton}

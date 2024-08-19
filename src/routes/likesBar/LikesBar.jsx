@@ -4,36 +4,47 @@ import { useUser } from '../../hooks/queryHooks'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import style from "./LikesBar.module.css"
-export default function LikesBar({video}) {
+export default function LikesBar({data,...show}) {
 
-const {data:user} = useUser()
+const {data:loggedUser} = useUser()
 
-const {mutate:mutateLike} = useLikeVideo(video.id)
+const {mutate:mutateLike} = useLikeVideo(data.id)
 
-const isLiked = user?.data?.likedVideos.includes(video.id)
+const isLiked = loggedUser?.data?.likedVideos.includes(data.id)
 
-const isDisliked = user?.data?.dislikedVideos.includes(video.id)
+const isDisliked = loggedUser?.data?.dislikedVideos.includes(data.id)
 
 return (
-<div className={style.likeDislike}>
+<div
+    className = { style.likeDislike }
+    data-small = { show.small } 
+> 
     {/*Like button*/}
-    <div 
-        name="like"
-        onClick={()=>mutateLike('like')}
-        data-selected={isLiked}
-    >
-        <ThumbUpAltOutlinedIcon></ThumbUpAltOutlinedIcon>
-        {video.likes}
-    </div>
+    {
+    show.like &&
+        <div 
+            onClick={()=>mutateLike('like')}
+            data-selected={isLiked}
+        >
+            <ThumbUpAltOutlinedIcon fontSize={show.small && "small"}/>
+            {
+            show.counter && data.likes
+            }
+        </div>
+    }
     {/*Dislike button*/}
-    <div
-        name="dislike"
-        onClick={()=>mutateLike('dislike')}
-        data-selected={isDisliked}
-    >
-        <ThumbDownOutlinedIcon></ThumbDownOutlinedIcon>
-        {video.dislikes}
-    </div>
+    {
+    show.dislike &&
+        <div
+            onClick={()=>mutateLike('dislike')}
+            data-selected={isDisliked}
+        >
+            <ThumbDownOutlinedIcon fontSize={show.small && "small"}/>
+            {
+            show.counter && data.dislikes
+            }
+        </div>
+    }
 </div>
 )
 }

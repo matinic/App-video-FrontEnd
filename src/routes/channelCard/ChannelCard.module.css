@@ -47,6 +47,7 @@
     }
     .nameContainer{
         gap: 0px;
+        flex-grow: 1;
         button{
             padding: 3px 15px;
             font-size: 0.7rem;
@@ -68,6 +69,7 @@
     }
 }
 [data-size="large"]{
+    max-width: max-content;
     gap: 20px;
     .profileImage{
         flex-shrink: 0;

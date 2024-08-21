@@ -8,11 +8,14 @@ import { Portal } from '@mui/material';
 import * as mutate from "../../hooks/mutationHooks"
 import { useNavigate } from 'react-router-dom';
 import Edit from '../edit/Edit';
+import { useSnackBar } from '../../hooks/suztandHooks';
 export default function EditVideoButtons({data,...show}) {
     
 const { mutate:publish } = mutate.usePublish( data.id )
 
 const { mutate:mutateDelete } = mutate.useDeleteVideo( data.id )
+
+const { setOpen } = useSnackBar()
 
 const navigate = useNavigate()
 
@@ -22,10 +25,10 @@ const deleteHandler = ()=>{
     const deleteVideo = confirm("Warnin: You want to delete the video?")
     if(deleteVideo){
         mutateDelete(data.id,{
-            onSuccess: res =>{
-                alert(res.data.message)
+            onSuccess: () => {
+                setOpen("Video Deleted")
                 navigate("/")
-            }
+            },
         })
     }
   }
@@ -78,8 +81,6 @@ return (
                 <DeleteIcon fontSize='medium'/>
             </button>
         }
-        
-       
     </div>
   )
 }

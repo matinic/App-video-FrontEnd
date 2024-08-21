@@ -24,7 +24,7 @@ const useLogout = () => {
 }
 
 const useCreateVideo = () => useMutation({
-    mutationFn: videoInfo => myApi.post('/create',videoInfo),
+        mutationFn: videoInfo => myApi.post('/create',videoInfo)
 })
 
 const useDeleteVideo = () => {
@@ -124,11 +124,28 @@ const useUploadImage = () => useMutation({
     })
 })
 
-const useUploadVideo = () => useMutation({
-    mutationFn: video => cloudinaryApi.post(`/video`,{
-        file: video
+const useUploadVideo = (setProgress,abortRef) => {
+    const mutation = useMutation({
+        mutationFn: video => {
+            const controller = new AbortController()
+            const response = cloudinaryApi.post(`/video`,{file: video},
+                {
+                    signal: controller.signal,
+                    onUploadProgress: progressEvent => {
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100)
+                        setProgress(progress)
+                    }
+                },
+            )
+            abortRef.current = () => controller.abort()
+            return response
+        }
     })
-})
+    
+    return mutation
+}
+    
+
 
 export {
     useSignin,

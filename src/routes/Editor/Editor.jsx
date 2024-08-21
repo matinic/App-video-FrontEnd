@@ -9,23 +9,15 @@ import { CircularProgress } from '@mui/material';
 import { useUpdateUserData, useUploadImage } from '../../hooks/mutationHooks';
 import { useUser } from "../../hooks/queryHooks"
 
-function Editor({onClose,open}) {
+function Editor({onClose,image}) {
 
 const [zoom,setZoom] = useState( 1.2 )
-
-const [imageFile, setImageFile] = useState()
-
-const [clickOnInput,setClickOnInput] = useState(true)
-
-const [showModal, setShowModal] = useState(false)
 
 const {data:user} = useUser()
 
 const {mutate:uploadImage,isLoading:isUpImage} = useUploadImage()
 
 const {mutate:updateUser} = useUpdateUserData()
-
-const inputFile = useRef()
 
 const editorRef = useRef(null)
 
@@ -43,32 +35,6 @@ const style = {
   pb: 3,
 };
 
-const loadImage = (e)=>{
-  const file = e.target.files[0]
-  const reader = new FileReader()
-  reader.onloadend = ()=>{
-      setImageFile(reader.result)
-  }
-  reader.readAsDataURL(file)
-}
-
-useEffect(()=>{
-  console.log("ejecutando effect")
-  if(open && clickOnInput){
-    inputFile.current.click()
-    setClickOnInput(false)
-  } 
-  if(imageFile){
-    setShowModal(true)
-  }
-  if(!open && !clickOnInput ){
-    inputFile.current.value = ""
-    setImageFile(null)
-    setShowModal(false)
-    setClickOnInput(true)
-  }
-},[imageFile,open])
-console.log(imageFile)
 const zoomHandler = (e,newValue)=>{
   setZoom(newValue)
 }
@@ -103,14 +69,7 @@ const cropAndUpload = () => {
 }
 
 return (
-  <>
-    <input
-        type="file"
-        ref={inputFile}
-        onChange={loadImage}
-        style={{display: "none"}}
-    />
-    <Modal open={showModal} onClose={onClose}>
+    <Modal open={!!image} onClose={onClose}>
       <Box
         sx={{ ...style, width: 400 }}
         position="relative" 
@@ -126,7 +85,7 @@ return (
         >
             <AvatarEditor
               ref={editorRef}
-              image={imageFile}
+              image={image}
               width={250}
               height={250}
               border={20}
@@ -160,7 +119,6 @@ return (
         }
       </Box>
     </Modal>
-  </>
   )
   
 }

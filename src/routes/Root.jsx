@@ -20,7 +20,7 @@ export default function Root() {
           autoHideDuration={500}
           onClose={setClose}
           message={message}
-        ></Snackbar>
+        />
         {
           pathname === "/" ?
           <Videos/>:null

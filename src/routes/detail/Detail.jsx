@@ -61,7 +61,7 @@ if(isSuccess) return (
             center
             subscribe
             name
-            row
+            size = "row"
             navigate
           />
           <LikesBar

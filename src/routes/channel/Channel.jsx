@@ -60,6 +60,7 @@ if(channelSuccess) return (
             subscribers
             subscribersModal
             editable
+            size = "large"
         />
         
         {/* Menu showing videos ana channel subscriptions*/}
@@ -136,7 +137,7 @@ if(channelSuccess) return (
                                     name
                                     image
                                     navigate
-                                    small
+                                    size = "small"
                                     horizontal
                                 >
                                     <VideoCard
@@ -170,6 +171,7 @@ if(channelSuccess) return (
                             horizontal
                             subscribe
                             subscribers
+                            size = "large"
                         />
                     )
                 }

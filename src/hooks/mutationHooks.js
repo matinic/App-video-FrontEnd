@@ -49,9 +49,11 @@ const useEditVideo = () => {
 
 const useLikeVideo = videoId => {
     const queryClient = useQueryClient()
+    
     return useMutation({
         mutationFn: option => myApi.put(`/like?id=${videoId}&option=${option}`),
         onSuccess: () => {
+
             const queries = [['video',videoId],['user'],['likedVideos']]
             queries.forEach(queryId => {
                 queryClient.invalidateQueries(queryId)

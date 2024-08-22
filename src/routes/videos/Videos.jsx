@@ -24,7 +24,7 @@ return (
                   name
                   image
                   navigate
-                  small
+                  size="small"
                   horizontal
               >
                 <VideoCard

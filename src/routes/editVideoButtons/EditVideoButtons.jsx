@@ -22,7 +22,7 @@ const navigate = useNavigate()
 const [showEditVideo,setShowEditVideo] = React.useState(false)
 
 const deleteHandler = ()=>{
-    const deleteVideo = confirm("Warnin: You want to delete the video?")
+    const deleteVideo = confirm("Warning: Do you want to delete the video?")
     if(deleteVideo){
         mutateDelete(data.id,{
             onSuccess: () => {
@@ -32,6 +32,22 @@ const deleteHandler = ()=>{
         })
     }
   }
+const handlePublish = () => {
+    if(data.published){
+        const hideVideo = confirm("Warning: Do you want to hide this video?")
+        if(hideVideo){
+            publish( false, {
+                    onSuccess : () => setOpen("The video is now hidden")
+                }
+            )
+        }
+    }else{
+        publish( true, {
+                onSuccess : () => setOpen("The video is now public")
+            }
+        )
+    }
+}
 
 return (
     <div className = { style.videoOptions }>
@@ -59,9 +75,9 @@ return (
         {
         show.hide && 
             <button 
-                onClick = { () => publish( !data.published ) }
-                data-published ={ !data.published }
-                title={ data.published  ? "Hide Video" : "Show Video" }
+                onClick = { handlePublish }
+                data-published = { !data.published }
+                title = { data.published  ? "Hide Video" : "Show Video" }
             >
                 {
                     data.published 

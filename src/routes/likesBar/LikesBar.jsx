@@ -4,6 +4,7 @@ import { useUser } from '../../hooks/queryHooks'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import style from "./LikesBar.module.css"
+
 export default function LikesBar({data,...show}) {
 
 const {data:loggedUser} = useUser()
@@ -13,6 +14,8 @@ const {mutate:mutateLike} = useLikeVideo(data.id)
 const isLiked = loggedUser?.data?.likedVideos.includes(data.id)
 
 const isDisliked = loggedUser?.data?.dislikedVideos.includes(data.id)
+
+const suztand = {}
 
 return (
 <div

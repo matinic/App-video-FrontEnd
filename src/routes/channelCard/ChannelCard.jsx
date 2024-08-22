@@ -4,18 +4,15 @@ import style from "./ChannelCard.module.css"
 import { useNavigate } from 'react-router-dom'
 import { useUser } from '../../hooks/queryHooks'
 import { useSubscribe } from '../../hooks/mutationHooks'
-import { createPortal } from 'react-dom'
-import Subscriptors from '../subscriptors/Subscriptors'
 import Editor from '../Editor/Editor'
 import { useSnackBar } from '../../hooks/suztandHooks'
+import Followers from "../followers/Followers"
 
-export default function ChannelCard({ data, children, ...show}) {
-
-const [followersModal,setFollowersModal] = useState(false)
-
-const [size, setSize] = useState("large")
+export default function ChannelCard({ data, children, size, ...show}) {
 
 const [imageFile, setImageFile] = useState()
+
+const [open,setOpen] = useState(false)
 
 const inputRef = useRef()
 
@@ -49,14 +46,6 @@ const goToChannel = ()=>{
     navigate(`/channel/${data.username}`)
 }
 
-const showModal = () => setFollowersModal(prev => !prev)
-
-useEffect(()=>{
-    if(show.small) setSize("small")
-    if(show.large) setSize("large")
-    if(show.row) setSize("row")
-},[])
-
 const loadImage = e => {
     const file = e.target.files[0]
     const reader = new FileReader()
@@ -67,10 +56,16 @@ const loadImage = e => {
 }
 
 const handleClick = () => {
-    if(inputRef.current){
-        inputRef.current.click()
-    }
+    if(isChannelOwner){
+        if(inputRef.current){
+            inputRef.current.click()
+        }
+    } 
 }
+const handleOpenFollowers = () => setOpen(true)
+
+const handleCloseFollowers = () => setOpen(false)
+
 
 return (
     <div 
@@ -92,9 +87,9 @@ return (
                 />
             </span>
         }
-        {
-        !!imageFile && <Editor onClose={handleClose} image={imageFile}></Editor>
-        }
+        
+        <Editor onClose={handleClose} image={imageFile}></Editor>
+        
         <input
             type="file"
             ref={inputRef}
@@ -122,24 +117,17 @@ return (
                 {
                 show.subscribers &&
                     <p
-                        onClick={ show.subscribersModal && showModal }
+                        onClick={ show.subscribersModal && handleOpenFollowers }
                         className={ show.subscribersModal && style.subscribers }
                     >
-                        { data.followersCount } subscribers
+                        { data.followersCount } followers
                     </p>
                 }
 
                 {/* Followers list modal -Show the followers list of the channel*/}
-                {
-                followersModal &&
-                    createPortal
-                    (
-                    < Subscriptors
-                        closeButton = { setFollowersModal }
-                    />,
-                    document.body 
-                    )
-                }
+                
+                <Followers username = { data.username } onClose = {  handleCloseFollowers } open={ open }></Followers>
+                  
             </div>
             {/*Suscribe button*/}
             {

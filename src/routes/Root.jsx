@@ -17,7 +17,7 @@ export default function Root() {
         <Nav/>
         <Snackbar
           open={open}
-          autoHideDuration={500}
+          autoHideDuration={1000}
           onClose={setClose}
           message={message}
         />

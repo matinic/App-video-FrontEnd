@@ -68,7 +68,7 @@ const {data} = useFollowers(username)
             <Button onClick={onClose}><CloseIcon></CloseIcon></Button>
         </Box>
         <Divider variant="middle" flexItem sx={{margin:"0px",padding:"0px", border: "1px solid"}}></Divider>
-        <Box>
+        <Box sx={{display:"flex", gap:"10px", flexDirection:"column"}}>
             {
                 data?.data?.map( user =>
                     <ChannelCard

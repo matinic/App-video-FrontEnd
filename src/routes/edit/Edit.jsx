@@ -1,6 +1,7 @@
 import React from 'react'
 import style from './Edit.module.css'
 import { useEditVideo } from '../../hooks/mutationHooks'
+import { useSnackBar } from '../../hooks/suztandHooks'
 
 export default function Edit({close,videoInfo}) {
 
@@ -13,6 +14,8 @@ export default function Edit({close,videoInfo}) {
   const [error,setError] = React.useState({})
 
   const {mutate:edit} = useEditVideo()
+
+  const { setOpen }= useSnackBar()
 
   const validation = ()=>{
     let error = {}
@@ -68,7 +71,10 @@ export default function Edit({close,videoInfo}) {
             type='button'
             disabled={Object.keys(error).length}
             onClick={()=>edit(form,{
-              onSuccess: ()=>close(false)
+              onSuccess: ()=>{
+                close(false)
+                setOpen("video updated")
+              }
             })}
           >Accept</button>
           <button onClick={

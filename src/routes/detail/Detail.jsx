@@ -35,56 +35,52 @@ if(isError) return (
 )
 
 if(isSuccess) return (
-    <div className={style.detailContainer}>
+    <main className={style.detailContainer}>
         {/*Video player*/}
-        <video
-          src = { video.data.url }
-          className = { style.videoPlayer }
-          controls
-        >
-        </video>
-        {
-        isVideoOwner &&
-          <EditVideoButtons
-            data = { video.data }
-            edit
-            hide
-            delete
-          />
-        }
-        <h2 className={style.videoTitle}>{video.data.title}</h2> 
-        <div className={style.channelContainer}>
-          <ChannelCard
-            data = { video.data.user }
-            image
-            subscribers
-            center
-            subscribe
-            name
-            size = "row"
-            navigate
-          />
-          <LikesBar
-            data = { video.data }
-            like
-            dislike
-            counter
-          />
+        <div className={style.dataBlock}>
+          <video
+            src = { video.data.url }
+            className = { style.videoPlayer }
+            controls
+          >
+          </video>
+          {
+          isVideoOwner &&
+            <EditVideoButtons
+              data = { video.data }
+              edit
+              hide
+              delete
+            />
+          }
+          <h2 className={style.videoTitle}>{video.data.title}</h2> 
+          <div className={style.channelContainer}>
+            <ChannelCard
+              data = { video.data.user }
+              image
+              subscribers
+              center
+              subscribe
+              name
+              size = "row"
+              navigate
+            />
+            <LikesBar
+              data = { video.data }
+              like
+              dislike
+              counter
+            />
+          </div>
         </div>
-         
-        <pre
-          className={style.videoDescription}
-          data-expand={expandDescription}
-        >
-          {`${video.data.description}`}
-        </pre>
-        <p 
-          className={style.expandButton}
-          onClick={()=>setExpandDescription(!expandDescription)}
-          data-expand={expandDescription}
-        >
-          <SouthIcon style={{fontSize: 'small'}}></SouthIcon>
-        </p>
-    </div>
+
+        <div style={{position: "relative"}}>
+          <pre  className={style.videoDescription}
+            data-expand={expandDescription}
+          >
+            {!!video.data.description ? video.data.description : <pre style={{fontStyle:"italic",color:"gray"}}>(There is no decription)</pre>}
+          </pre>
+        </div>
+    </main>
   )
 }

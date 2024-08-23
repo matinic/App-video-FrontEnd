@@ -21,6 +21,7 @@ return (
         src = { data.url }
         className = { style.thumbnail }
         onClick = { goToChannel }
+        poster = {data?.poster }
       />
     }
     {

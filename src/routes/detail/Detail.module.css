@@ -1,10 +1,20 @@
 .detailContainer{
     position: absolute;
     padding-top: 100px;
-    width: 90%;
+    width: 90vw;
+    min-width: 100px;
     margin-left: 50%;
     transform: translateX(-50%);
-    max-width: 1000px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.dataBlock{
+    margin-bottom: 15px;
+    margin-right: 15px;
+}
+.detailContainer video{
+   width: 50vw;
+   min-width: 500px;
 }
 h2.detailContainer span:hover{
     text-decoration:underline; 
@@ -46,27 +56,27 @@ button[data-published="true"],
     cursor: pointer
 }
 .videoDescription{
+    width: 500px;
     color: lightgray;
     min-height: 20px;
-    max-height: 100px;
-    margin-top: 15px;
+    max-height: 500px;
     margin-bottom: 5px;
     border-radius: 10px;
     background-color: black;
     padding: 15px;
     overflow: auto;
-    scrollbar-width: thin;
-    scrollbar-color: black;
     text-wrap: wrap ;
+    position: relative;
+    margin: 0px;
 }
 .videoDescription[data-expand="true"]{
     max-height: max-content
 }
 .expandButton{
+    position: absolute;
     background-color: lightgray;
     width: max-content;
     padding: 5px;
-    margin-top: 4px;
     border-radius: 50%;
     font-size: .7rem;
     border-radius: 50% 50%;
@@ -75,6 +85,8 @@ button[data-published="true"],
     color: black;
     cursor: pointer;
     transition: background-color .25s, color .25s;
+    top: 25px;
+    right: 25px;
 }
 .expandButton:hover{
     background-color: black;

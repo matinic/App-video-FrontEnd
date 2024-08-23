@@ -34,13 +34,12 @@ const cropAndUpload = () => {
     canvas.toBlob( () => uploadImage({
           image: imageURL,
           params: {
-              eager:
+            eager:
             `r_max,` +
             `f_auto/`,
             folder: 'user_profile_images',
             public_id: user.data.username
-            }
-          },{
+          }},{
             onSuccess: (data) => { 
                 updateUser({
                   image: data.data.eager[0].url,

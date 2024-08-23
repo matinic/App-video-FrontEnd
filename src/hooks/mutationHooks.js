@@ -32,7 +32,7 @@ const useDeleteVideo = () => {
         return useMutation({
         mutationFn: videoId => myApi.delete(`/delete?id=${videoId}`),
         onSuccess: (res,videoId) => {
-            queryClient.invalidateQueries(['video',videoId])
+            queryClient.removeQueries(['video',videoId])
         }
     })
 }
@@ -130,7 +130,10 @@ const useUploadVideo = (setProgress,abortRef) => {
     const mutation = useMutation({
         mutationFn: video => {
             const controller = new AbortController()
-            const response = cloudinaryApi.post(`/video`,{file: video},
+            const response = cloudinaryApi.post(`/video`,{
+                    file: video,
+                    eager: `f_mp4|du_50p/f_jpg,c_scale,w_900`,
+                },
                 {
                     signal: controller.signal,
                     onUploadProgress: progressEvent => {
@@ -141,8 +144,9 @@ const useUploadVideo = (setProgress,abortRef) => {
             )
             abortRef.current = () => controller.abort()
             return response
-        }
-    })
+        },
+    }
+)
     
     return mutation
 }

@@ -28,6 +28,7 @@ export default function UploadVideo() {
   const [form,setForm] = useState({
     title: '',
     description: '',
+    poster: '',
     published: '',
     url: ''
   })
@@ -62,7 +63,7 @@ export default function UploadVideo() {
 
   const fileHandler = async (e) => {
     const archive = e.target.files[0];
-    const fileName = e.target.files[0].name;
+    const fileName = e.target.files[0]?.name;
     const fileSize = (e.target.files[0].size / (1024 * 1024)).toFixed(2) + ' MB';
     setVideoData({
       name: fileName,
@@ -79,11 +80,16 @@ export default function UploadVideo() {
   const uploadVideoHandler = async(e)=>{
     e.preventDefault()
     upload(video, {
-      onSuccess: ({data})=>{
-        setForm(prev => ({...prev, url : data.url}))
+      onSuccess: data => {
+        setForm( prev => ({
+            ...prev,
+            url : data.data.eager[0].secure_url,
+            poster: data.data.eager[1].secure_url
+          })
+        )
       },
-      onError: (error) => {
-        alert(error)
+      onError: error => {
+        console.log(error)
       }
     })
   }
@@ -178,18 +184,19 @@ useEffect(()=>{
                     
                         {
                           isLoading ?
-                          <Box>
-                            <Stack display={"flex"} direction={'row'} gap={"5px"} alignItems={"center"}>
-                              <LinearProgress
-                                variant="determinate"
-                                value={progress}
-                                sx={{flexGrow:1}}
-                              />
-                              <Typography>{progress}%</Typography>
-                            </Stack>
-                              <Button variant="contained" onClick={abortRef.current}>Cancel</Button>
-                          </Box>
-                            :  <button disabled={Object.keys(error).length}>OK</button>
+                              <Box>
+                                <Stack display={"flex"} direction={'row'} gap={"5px"} alignItems={"center"}>
+                                  <LinearProgress
+                                    variant="determinate"
+                                    value={progress}
+                                    sx={{flexGrow:1}}
+                                  />
+                                  <Typography>{progress}%</Typography>
+                                </Stack>
+                                  <Button variant="contained" onClick={abortRef.current}>Cancel</Button>
+                              </Box>
+                            : 
+                              <button disabled={Object.keys(error).length}>OK</button>
                         }
                     </fieldset>
                 </form>

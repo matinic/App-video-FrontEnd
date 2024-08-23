@@ -1,4 +1,4 @@
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./nav/Nav";
 import Videos from "./videos/Videos";
 import React from 'react'

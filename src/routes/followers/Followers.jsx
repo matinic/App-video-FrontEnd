@@ -29,7 +29,6 @@ const {data} = useFollowers(username)
         flexDirection= "column"
         display = "flex"
         gap = {2}
-        maxHeight = {"50vh"}
     >
         <Box
             sx={{
@@ -37,13 +36,11 @@ const {data} = useFollowers(username)
                 alignItems: 'baseline',
                 justifyContent: "space-between",
                 gap:"30px",
-                overflowY : "auto"
               }}
         >
             <Stack     
                 sx={{
                     display: 'flex',
-                    flexDirection: "row",
                     alignItems: 'baseline',
                     justifyContent: "space-between",
                     gap:"30px"
@@ -68,7 +65,7 @@ const {data} = useFollowers(username)
             <Button onClick={onClose}><CloseIcon></CloseIcon></Button>
         </Box>
         <Divider variant="middle" flexItem sx={{margin:"0px",padding:"0px", border: "1px solid"}}></Divider>
-        <Box sx={{display:"flex", gap:"10px", flexDirection:"column"}}>
+        <Box sx={{display:"flex", gap:"10px", flexDirection:"column", overflowY : "auto", maxHeight: "400px"}} >
             {
                 data?.data?.map( user =>
                     <ChannelCard

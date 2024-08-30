@@ -12,7 +12,6 @@ export default function GenericModal({children,onClose,open,...moreStyles}) {
         bgcolor: '#262626',
         boxShadow: 24,
         borderRadius: 2,
-        width: 400,
         pt: 2,
         px: 4,
         pb: 3,

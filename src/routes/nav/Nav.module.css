@@ -3,10 +3,14 @@
     width: 100%;
     background: black;
     display: flex;
-    z-index: 20;
+    z-index: 1;
 }
 .title{
+    display: flex;
+    align-items: center;
     font-size: 2.1rem;
+    margin: 0px;
+    line-height: 2.1rem;
 }
 .title:hover{
     cursor: pointer;
@@ -17,9 +21,7 @@
     justify-content: end;
     align-items: center;
     padding-right: 10px;
-}
-.navButtonsContainer *, .title {
-    margin: 4px;
+    gap:15px;
 }
 .searchBar{
     display: flex;
@@ -49,19 +51,15 @@
     border-bottom-right-radius: 8px;
     margin-left: 0px;
 }
-.button{
-    padding: 8px;
-    cursor: pointer;
-    color: white;
-}
-.button[name="upload"]{
-    border: 1px solid gray;
+.upload{
+    border: 1px solid;
     border-radius: 5px;
-    margin-right: 10px;
+    padding: 3px
 }
-.button:hover{
+.upload:hover{
     background-color: gray;
     border-radius: 5px;
+    cursor: pointer;
 }
 /*Notification Bell*/
 .notificationsBell{
@@ -74,17 +72,7 @@
     background-color: gray;
     border-radius: 50%;
 }
-/*Notifications List*/
-.notificationsList{
-    position: absolute;
-    top: 55px;
-    right: 60px;
-    padding: 0px;
-    list-style-type: none;
-    background-color: black;
-    border: 1px solid;
-    border-radius: 10px;
-}
+
 /*Profile Controls*/
 .imageProfile{
     width: 40px;
@@ -102,7 +90,7 @@
     border: 1px solid;
     border-radius: 10px;
 }
-.userProfileButtons[data-display="none"], .notificationsList[data-display="none"]{
+.userProfileButtons[data-display="none"], .floatingMenu[data-display="none"]{
     display: none
 }
 .button[name="profile"]{
@@ -123,11 +111,42 @@
 .button[name="logout"]:hover{
    background-color: gray;
    color: white;
- 
 }
 .imageProfile[name="imgProfileLink"]{
     margin: 0px;
 }
+
+.floatMenu{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    list-style-type: none;
+    background-color: black;
+    border: 1px solid;
+    border-radius: 10px;
+    z-index: 2;
+    right: 0px;
+    padding: 0px;
+    margin-top: 8px;
+    max-width: 400px;
+    max-height: 350px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.floatMenu li{
+    margin: 0px;
+    padding: 5px 25px;
+    text-decoration: none;
+
+}
+
+.floatMenu li:hover{
+    color: azure;
+    cursor: pointer;
+    background-color:gray;
+}
+
 img[name="logout"]{
     width: 25px;
 }

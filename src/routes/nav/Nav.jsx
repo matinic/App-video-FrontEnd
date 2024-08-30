@@ -1,180 +1,191 @@
-import React,{useEffect, useRef, useState} from 'react'
+import React,{useRef, useState, useEffect, useMemo} from 'react'
 import style  from './Nav.module.css'
-import imageDefault from "../../assets/profile-image.png"
-import { useNavigate, Link, useLocation } from 'react-router-dom'
-import { useLogout } from '../../hooks/mutationHooks'
-import { useUser } from '../../hooks/queryHooks'
-import notificationsBellIcon from "../../assets/notifications_bell.png"
-import logoutIcon from "../../assets/logout.png"
+import { useNavigate } from 'react-router-dom'
+import { useUser, useGetNotifications, useNotificationsCounter } from '../../hooks/queryHooks'
+import { useLogout, useUpdateNotification } from "../../hooks/mutationHooks"
+import { Portal } from '@mui/material'
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
+import ChannelCard from '../channelCard/channelCard'
+import LogoutIcon from '@mui/icons-material/Logout';
+import Notification from '../notification/Notification'
 
 export default function Nav() {
 
-  const {pathname} = useLocation()
+//navigation hook
+const navigate = useNavigate()
 
-  //Quey that brings all information about user asynchronous state
-  const { data, isSuccess } = useUser()
+//Quey that brings all information about user?.data asynchronous state
+const { data:user, isSuccess } = useUser()
 
-  //Information got from user query
-  const user = data?.data
+const { mutate:logout } = useLogout(navigate)
 
-  //Logout hook
-  const { mutate:logout } = useLogout()
+const notificationsRef = useRef()
 
-  //navigation hook
-  const navigate = useNavigate()
+const notiListRef = useRef()
 
-  //View state of the user menu
-  const [profileListView, setProfileListView] = useState("none")
+const profileRef = useRef()
 
-  //Notification state of the notifications
-  const [notificationsListView, setNotificationsListView] = useState("none")
+const [open,setOpen] = useState({
+  notifications: false,
+  profile: false
+})
 
-  //Image from user profile visible on the navbar (button)
-  const profileButton = useRef()
+const { data:notifications, fetchNextPage } = useGetNotifications()
 
-  //Menu profile buttons container (list)
-  const profileList = useRef()
+const { mutate:updateNotification } = useUpdateNotification()
 
-  //Notifications bell image icon (button)
-  const notificationsButton = useRef()
+const { data:counter } = useNotificationsCounter()
 
-  //Notifications List (list)
-  const notificationsList = useRef()
-
- //Function that returns handlers used in the hide list actions
-  const hideFunctionsFactory = (button, list, setState)=> (e)=>{
-    if(
-        !list.current?.contains(e.target) && //list
-        e.target !== button.current && //button
-        list.current //list
-      ){
-        setState("none")
-        document.removeEventListener("click",hideFunctionsFactory(button, list, setState))
-      }
+useEffect(()=>{
+  if(open.notifications){
+    updateNotification()
   }
-  const hideProfileListHandler = hideFunctionsFactory(profileButton, profileList, setProfileListView)
-  const hideNotifcationsListHandler = hideFunctionsFactory(notificationsButton, notificationsList, setNotificationsListView)
+},[open.notifications])
+
+const scrollNotiHandler = event =>{
+  const notiListHeight = notiListRef.current.scrollHeight
+  const notiList = notiListRef.current.clientHeight
+  const scrollTop = notiListRef.current.scrollTop
+  if(scrollTop + notiList >= notiListHeight){
+    fetchNextPage()
+  }
+}
 
 
-  const notificationsMessages = ["New Video 1","New Video 2", "New Video 3" ]
-  return (
-    <div className= {style.nav} >
-
-      {/*Website Name*/}
-      <h1
-        className={style.title}
-        onClick={()=>navigate("/")}
-      >
-        MyVid
-      </h1>
-
-      {/*Nav buttons container */}
-      <div className={style.navButtonsContainer}>     
-         
-        {/*Upload nav button*/}
-        <Link
-          to="/create"
-          style={{postion:'relative'}}
-        >
-          <p className={style.button} name="upload">Upload</p>
-        </Link>
-
-        {/* Search bar */}
-        <div className={style.searchBar} >
-          <p className={style.searchButton}>Search</p>
-          <input type="text" />
-        </div>
-
-        {
-          isSuccess && <>      
-             {/*Notifications Button*/}
-              <img
-                src={notificationsBellIcon}
-                className={style.notificationsBell}
-                ref={notificationsButton}
-                onClick={()=>{
-                    setNotificationsListView(notificationsListView === "none" ? "" : "none")
-                    document.addEventListener("click", hideNotifcationsListHandler)
-                  }
-                }
-              />
-
-              {/*Notifications List */}
-              <ul
-                className={style.notificationsList}
-                ref = {notificationsList}
-                data-display={notificationsListView}  
-              >
-                  {
-                    notificationsMessages.map(
-                      (message,i) => <li key ={i} className={style.button}>{message}</li>
-                      ).reverse()
-                  }
-              </ul>
-
-              {/*User profile Button*/}
-              <img
-                src={ user?.image || imageDefault }
-                className={style.imageProfile}
-                ref={profileButton}
-                onClick={ ()=> {
-                  setProfileListView( profileListView === "none" ? "" : "none" )
-                  document.addEventListener("click", hideProfileListHandler)
-                }}
-              />
-
-              {/*User Profile buttons*/}
-              <ul className={style.userProfileButtons} data-display={profileListView} ref={profileList} >
-                  <li
-                    className={style.button}
-                    name="profile"
-                    onClick=
-                      { 
-                        () => 
-                          {
-                            navigate(`/channel/${user.username}`) 
-                            setProfileListView("none")
-                          }
-                      }
-                  >
-                    <img
-                      src={ user?.image || imageDefault }
-                      className={style.imageProfile}
-                      name="imgProfileLink"
-                    />
-                    {user.username}
-                  </li>
-                  {/*Logout Button*/}
-                  <li
-                      className={style.button}
-                      name="logout"
-                      onClick={ () => logout(null,
-                          {
-                            onSuccess: () => {
-                              navigate("/")
-                              setProfileListView("none")
-                            }
-                          }
-                        )
-                      }>
-                      <img src={logoutIcon} alt="" name="logout"/>
-                      Log Out
-                  </li>
-              </ul>
-            </>
-        }
-        {
-          ( 
-            !user ?
-            <>
-              <p onClick={()=> navigate('/signup')} name="signup" className={style.button}>Signup</p>
-              <p onClick={()=> navigate('/signin')} name="signin" className={style.button}>Signin</p>
-            </>
-            : null 
-            ) 
-        }
-    
-      </div>
-  </div>
+const showController = (option,target) =>{
+  setOpen(prev => {
+    const names = Object.keys(prev)
+    let close = {}
+    names.forEach( name => {
+      if(name !== target) close[name] = false
+    })
+    return {
+        ...close,
+        [target]: option
+      }
+    }
   )
 }
+
+const showHandler = event => {
+  event.stopPropagation()
+  const target = event.currentTarget.getAttribute("data-name")
+  if(!open[target]){
+    showController(true,target)
+    document.addEventListener("click",()=>showController(false,target))
+  }else{
+    showController(false,target)
+    document.removeEventListener("click",()=>showController())
+  }
+}
+
+return (
+  <div className= {style.nav} >
+
+    {/*Website Name*/}
+    <h1
+      className={style.title}
+      onClick={()=>navigate("/")}
+    >
+      MyVid
+    </h1>
+
+    {/*Nav buttons container */}
+    <div className={style.navButtonsContainer}>     
+        
+      {/*Upload nav button*/}
+  
+      <p
+        className={style.upload}
+        name="upload"
+        onClick={()=>navigate("/create")}
+      >
+        Upload
+      </p>
+
+      {/* Search bar */}
+      <div className={style.searchBar} >
+        <p className={style.searchButton}>Search</p>
+        <input type="text" />
+      </div>
+
+      {
+        isSuccess && <>      
+            {/*Notifications Button*/}
+            <span
+              onClick={showHandler}
+              data-name = "notifications"
+              ref={notificationsRef}
+              style={{cursor:"pointer", position: "relative"}}
+            >
+              <Badge badgeContent={counter?.data?.count || 0} color="error">
+                  <NotificationsIcon fontSize='medium'/>
+              </Badge>
+            </span>
+            {
+            open.notifications &&
+              <Portal container={notificationsRef.current}>
+                <ul
+                  className={style.floatMenu}
+                  ref={notiListRef}
+                  onScroll={scrollNotiHandler}>
+                  {
+                  notifications.pages?.map(page => 
+                    page.data.notifications?.map( noti => 
+                      <Notification key={noti.id} data={noti}/>
+                    ))
+                  }
+                </ul>
+              </Portal>
+            }
+
+            {/*user?.data profile Button*/}
+            <span
+              style={{position: "relative"}}
+              onClick = {showHandler}
+              data-name = "profile"
+              ref={profileRef}
+            >
+              <ChannelCard 
+                data={user.data}
+                image
+                size = "small"
+                sx = {{cursor: "pointer"}}
+                clean
+              />
+            </span>
+            {
+            open.profile &&
+                <Portal container={profileRef.current}>
+                  <ul className={style.floatMenu} >
+                      <li className={style.button}>
+                        <ChannelCard data={user.data} image name size="small" navigate/>
+                      </li>
+                      {/*Logout Button*/}
+                      <li
+                        className = { style.button }
+                        onClick = { ()=>logout() }
+                        style={{display: "flex", alignItems: "center", justifyContent:"center", gap:"10px"}}
+                      >
+                        <LogoutIcon />
+                        Log Out
+                      </li>
+                  </ul>
+                </Portal>
+            }
+          </>
+      }
+      {
+        ( 
+        !user?.data &&
+          <>
+            <p onClick={()=> navigate('/signup')} style={{cursor:"pointer"}}>Signup</p>
+            <p onClick={()=> navigate('/signin')} style={{cursor:"pointer"}}>Login</p>
+          </>
+        ) 
+      }
+  
+    </div>
+</div>
+)}

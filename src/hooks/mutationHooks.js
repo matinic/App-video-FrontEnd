@@ -9,17 +9,18 @@ const useSignin = () => useMutation({
     }
 })
 
-const useLogout = () => {
+const useLogout = navigate => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: () => myApi.post('/logout'),
         onSuccess: () => {
             localStorage.removeItem('accessToken')
-            const queries = [['user'],['likeVideos'],['subscriptions']]
+            const queries = [['user'],['likeVideos'],['subscriptions'],["notifications"],["notificationsCounter"]]
             queries.forEach(queryId => {
                 queryClient.removeQueries(queryId)
             })
-        }
+        },
+        onSettled: () => navigate("/")
     })       
 }
 
@@ -146,13 +147,27 @@ const useUploadVideo = (setProgress,abortRef) => {
             return response
         },
     }
-)
-    
+)   
     return mutation
 }
+
+const useNotification = () => useMutation({
+    mutationFn: id => myApi.post(`/notification?id=${id}`),
+})
+
+const useUpdateNotification = () => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: () => myApi.put('/notification'),
+        onSuccess: () => {
+            const queries = [['notifications'],['notificationsCounter']]
+            queries.forEach(queryId => {
+                queryClient.invalidateQueries(queryId)
+            })
+        }
+    })
+}
     
-
-
 export {
     useSignin,
     useCreateVideo,
@@ -166,4 +181,6 @@ export {
     useUpdateUserData,
     useUploadImage,
     useUploadVideo,
+    useNotification,
+    useUpdateNotification
 }

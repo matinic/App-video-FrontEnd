@@ -11,7 +11,7 @@
 .nameContainer{
     display: flex;
     flex-flow: column;
-    gap: 10px;
+    gap: 10px; 
     h1{
         margin: 0px;
         font-size: 2.5rem;
@@ -44,6 +44,9 @@
         position: relative;
         height: 40px;
         width: 40px;
+        img{
+            flex-shrink: 0;
+        }
     }
     .nameContainer{
         gap: 0px;
@@ -53,19 +56,21 @@
             font-size: 0.7rem;
             margin-top: 10px;
         }
-        h1{
-            margin: 0px;
-            padding: 0px;
-            font-size: 1rem;
-            font-weight:normal;
-            font-style: italic;
-        }
-        p{
-            margin: 0px;
-            font-size: 0.8rem;
-            font-weight:normal;
-            padding: 0px;
-        }
+      
+            h1{
+                margin: 0px;
+                padding: 0px;
+                font-size: 1rem;
+                font-weight:normal;
+                font-style: italic;
+            }
+            p{
+                margin: 0px;
+                font-size: 0.8rem;
+                font-weight:normal;
+                padding: 0px;
+            }
+        
     }
 }
 [data-size="large"]{

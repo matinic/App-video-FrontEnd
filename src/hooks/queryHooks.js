@@ -5,40 +5,62 @@ import  { myApi } from '../axios/myApi'
 const useAllVideos = () => useInfiniteQuery({
     queryKey: ['allVideos'],
     queryFn: ({pageParam = 0, limit = 12}) => myApi(`/list?limit=${limit}&page=${pageParam}`),
-    getNextPageParam: (lastPage) => lastPage.data.nextCursor
+    getNextPageParam: (lastPage) => lastPage.data.nextCursor,
+    onError: error => console.log(error),
 })
 
 const useChannel = (channel) => useQuery({
     queryKey: ['channel',channel],
     queryFn: () => myApi(`/channel?username=${channel}`),
+    onError: error => console.log(error),
 })
 
 const useFollowers = (username) => useQuery({
     queryKey: ['followers',username],
-    queryFn: () => myApi(`/followers?username=${username}`)
+    queryFn: () => myApi(`/followers?username=${username}`),
+    onError: error => console.log(error),
 })
 
 const useLikedVideos = () => useQuery({
     queryKey: ['likedVideos'],
     queryFn: () => myApi('/likedVideos'),
+    onError: error => console.log(error),
     enabled: !!localStorage.getItem('accessToken')
 })
 
 const useSubscriptions = () => useQuery({
     queryKey: ['subscriptions'],
     queryFn: () => myApi('/subscriptions'),
+    onError: error => console.log(error),
     enabled: !!localStorage.getItem('accessToken')
 })
 
 const useUser = () => useQuery({
     queryKey: ['user'],
     queryFn: () => myApi('/profile'),
+    onError: error => console.log(error),
     enabled: !!localStorage.getItem('accessToken')
 })
 
 const useVideo = (id) => useQuery({
     queryKey: ['video',id],
     queryFn: () => myApi(`/detail?id=${id}`)
+})
+
+const useGetNotifications = () =>  useInfiniteQuery({
+    queryKey: ['notifications'],
+    queryFn: ({pageParam = 0, limit = 4}) => myApi(`/notification?limit=${limit}&page=${pageParam}`),
+    getNextPageParam: (firstPage,actualPage,lastPage) =>{
+        return firstPage.data.nextCursor
+    } ,
+    onError: error => console.log(error),
+    enabled: !!localStorage.getItem('accessToken')
+})
+
+const useNotificationsCounter = () => useQuery({
+    queryKey: ['notificationsCounter'],
+    queryFn: () => myApi('/notification/count'),
+    enabled: !!localStorage.getItem('accessToken')
 })
 
 export {
@@ -48,5 +70,7 @@ export {
     useLikedVideos,
     useSubscriptions,
     useUser,
-    useVideo
+    useVideo,
+    useGetNotifications,
+    useNotificationsCounter
 }

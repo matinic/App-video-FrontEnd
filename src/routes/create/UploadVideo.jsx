@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { useCreateVideo, useUploadVideo } from "../../hooks/mutationHooks"
+import { useCreateVideo, useUploadVideo, useNotification } from "../../hooks/mutationHooks"
 import { useUser } from '../../hooks/queryHooks'
 import style from './UploadVideo.module.css'
-import { io, Manager } from "socket.io-client";
+// import { io, Manager } from "socket.io-client";
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Stack from '@mui/material/Stack';
@@ -13,15 +13,6 @@ import Snackbar from '@mui/material/Snackbar';
 
 
 export default function UploadVideo() {
-
-  const socektIo = ()=>{
-    const manager = new Manager("http://localhost:3001")
-    const socket = manager.socket("/")
-    socket.on("connect",()=>{
-      console.log("conexion establecida con el servidor")
-    })
-    // socket.emit("hola", "mensaje del cliente");
-  }
   
   const navigate = useNavigate()
 
@@ -37,7 +28,7 @@ export default function UploadVideo() {
 
   const [progress, setProgress] = useState()
   
-  const { isSuccess } = useUser()
+  const { data:user, isSuccess } = useUser()
 
   const abortRef = useRef()
 
@@ -48,6 +39,8 @@ export default function UploadVideo() {
   const [ video, setVideo ] = useState('')
 
   const [videoData,setVideoData] = useState({name: "", size: ""})
+
+  const { mutate:notification } = useNotification()
 
   const formHandler = ({target}) => {
       setForm(prev => ({...prev, [target.name] : target.value}) )
@@ -107,6 +100,10 @@ useEffect(()=>{
   if(isUploadSuccess) submit(form,{
     onSuccess: data =>{
       navigate(`/detail/${data.data.video.id}`)
+      notification(data.data.video.id )
+    },
+    onError: error => {
+      console.log(error)
     }
   })
   setError(errorFactory())

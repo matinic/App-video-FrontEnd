@@ -1,6 +1,7 @@
 import axios from 'axios'
+import chalk from "chalk"
 
-const whiteList = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like','/signature','/update_profile','/subscriptions','/detail']
+const whiteList = ['/profile','/create','/delete','/edit','/likedVideos','/publish','/subscribe','/user_profile','/user','/like','/signature','/update_profile','/subscriptions','/detail',"/notification","/notification/count"]
 
 const myApi = axios.create({
     baseURL: 'http://localhost:3001/',
@@ -31,7 +32,7 @@ myApi.interceptors.response.use(
         if (error.response.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true
             try {
-                // console.log(chalk.bgYellow.black('retrying'))
+                // // console.log(chalk.bgYellow.black('retrying'))
                 const response = await myApi('/refresh')
                 const accessToken = response?.data?.accessToken
                 localStorage.setItem('accessToken', accessToken)

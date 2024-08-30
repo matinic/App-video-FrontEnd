@@ -8,7 +8,7 @@ import Editor from '../Editor/Editor'
 import { useSnackBar } from '../../hooks/suztandHooks'
 import Followers from "../followers/Followers"
 
-export default function ChannelCard({ data, children, size, ...show}) {
+export default function ChannelCard({ data, children, size, sx, ...show}) {
 
 const [imageFile, setImageFile] = useState()
 
@@ -22,9 +22,9 @@ const {data:loggedUser} = useUser()
 
 const {mutate:mutateSubscribe} = useSubscribe()
 
-const isChannelOwner = loggedUser?.data?.username === data.username
+const isChannelOwner = loggedUser?.data?.username === data?.username
 
-const isSubscribed = loggedUser?.data?.subscriptions?.includes(data.id)
+const isSubscribed = loggedUser?.data?.subscriptions?.includes(data?.id)
 
 const snack = useSnackBar()
 
@@ -43,7 +43,7 @@ const handleClose = () => {
 }
 
 const goToChannel = ()=>{
-    navigate(`/channel/${data.username}`)
+    navigate(`/channel/${data?.username}`)
 }
 
 const loadImage = e => {
@@ -72,17 +72,18 @@ return (
         className = { style.mainContainer }
         data-size = { size }
         data-navigate = { show.navigate }
+        style={{...sx}}
     >
         {/*Profile image of the channel */}
         {
-        show.image &&
+        show?.image &&
             <span 
                 className = { style.profileImage }
                 onClick = { show.navigate && goToChannel }
                 data-editable = {  isChannelOwner && show.editable }
             >
                 <img
-                    src = { data.image || imageDefault }
+                    src = { data?.image || imageDefault }
                     onClick = { show.editable && handleClick }
                 />
             </span>
@@ -97,6 +98,8 @@ return (
             style={{display: "none"}}
             accept=".png,.jpg,.jpeg" 
         />
+    {
+    !show.clean &&
         <div
             className = { style.nameContainer }
         >
@@ -109,37 +112,39 @@ return (
                     <h1
                         onClick = { show.navigate && goToChannel } 
                     >
-                        { data.username }
+                        { data?.username }
                     </h1>
                 }
 
                 {/*Susbcriptors counter*/}
                 {
                 show.subscribers &&
+                <>
                     <p
                         onClick={ show.subscribersModal && handleOpenFollowers }
                         className={ show.subscribersModal && style.subscribers }
                     >
-                        { data.followersCount } followers
+                        { data?.followersCount } followers
                     </p>
+                    {/* Followers list modal -Show the followers list of the channel*/}
+                    <Followers username = { data?.username } onClose = {  handleCloseFollowers } open={ open }></Followers>
+                </>
                 }
-
-                {/* Followers list modal -Show the followers list of the channel*/}
-                
-                <Followers username = { data.username } onClose = {  handleCloseFollowers } open={ open }></Followers>
                   
             </div>
+
             {/*Suscribe button*/}
             {
-            show.subscribe && !isChannelOwner &&
+                show.subscribe && !isChannelOwner &&
                 <button
-                    onClick = { handleSubscribe }
-                    data-subscribed = { isSubscribed }
+                onClick = { handleSubscribe }
+                data-subscribed = { isSubscribed }
                 >
                     { isSubscribed ? "subcribed" : "subscribe" }
                 </button>
             }
         </div>
+    }
     </div> 
   )
 }

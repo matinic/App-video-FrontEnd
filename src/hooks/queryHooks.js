@@ -2,11 +2,12 @@ import { useInfiniteQuery, useQuery} from "@tanstack/react-query";
 
 import  { myApi } from '../axios/myApi'
 
-const useAllVideos = () => useInfiniteQuery({
+const useAllVideos = pathname => useInfiniteQuery({
     queryKey: ['allVideos'],
     queryFn: ({pageParam = 0, limit = 12}) => myApi(`/list?limit=${limit}&page=${pageParam}`),
     getNextPageParam: (lastPage) => lastPage.data.nextCursor,
     onError: error => console.log(error),
+    enabled: pathname === "/",
 })
 
 const useChannel = (channel) => useQuery({
@@ -63,6 +64,16 @@ const useNotificationsCounter = () => useQuery({
     enabled: !!localStorage.getItem('accessToken')
 })
 
+const useSearchVideos = query => useInfiniteQuery({
+    queryKey: ['searchVideos'],
+    queryFn:({pageParam = 0, limit = 12}) => myApi(`/search?q=${query}&limit=${limit}&page=${pageParam}`),
+    getNextPageParam: lastPage =>{
+        return lastPage.data.nextCursor
+    },
+    enabled: !!query,
+    onError: error => console.log(error),
+})
+
 export {
     useAllVideos,
     useChannel,
@@ -72,5 +83,6 @@ export {
     useUser,
     useVideo,
     useGetNotifications,
-    useNotificationsCounter
+    useNotificationsCounter,
+    useSearchVideos
 }

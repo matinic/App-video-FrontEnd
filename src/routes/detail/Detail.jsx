@@ -20,6 +20,16 @@ const navigate = useNavigate()
 
 const isVideoOwner = video?.data?.user?.username === user?.data?.username
 
+const videoRef = React.useRef()
+
+React.useEffect(()=>{
+  if(videoRef.current){
+    videoRef.current.play()
+    videoRef.current.volume = 0.5
+  } 
+},[videoRef.current])
+
+
 const [expandDescription,setExpandDescription] = useState(false)
 
 if(isLoading) return (
@@ -39,6 +49,7 @@ if(isSuccess) return (
         {/*Video player*/}
         <div className={style.dataBlock}>
           <video
+            ref = { videoRef }
             src = { video.data.url }
             className = { style.videoPlayer }
             controls

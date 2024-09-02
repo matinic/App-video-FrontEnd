@@ -17,6 +17,8 @@ import UploadVideo from './routes/create/UploadVideo';
 import Root from './routes/Root';
 import Detail from './routes/detail/Detail';
 import Channel from "./routes/channel/Channel.jsx"
+import Home from './routes/public/Public.jsx';
+import Search from './routes/search/Search.jsx';
 
 const queryClient = new QueryClient()
 const router = createBrowserRouter([
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
     element: <Root/>,
     errorElement: <ErrorPage />,
     children: [
+      {
+        path: '/',
+        element: <Home/>
+      },
+      {
+        path: '/search/:query',
+        element: <Search/>
+      },
       {
         path: 'create',
         element: <UploadVideo/>

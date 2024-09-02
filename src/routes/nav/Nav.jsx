@@ -10,6 +10,7 @@ import ChannelCard from '../channelCard/channelCard'
 import LogoutIcon from '@mui/icons-material/Logout';
 import Notification from '../notification/Notification'
 
+
 export default function Nav() {
 
 //navigation hook
@@ -37,6 +38,16 @@ const { mutate:updateNotification } = useUpdateNotification()
 
 const { data:counter } = useNotificationsCounter()
 
+const [searchValue, setSearchValue] = useState('')
+
+const searchValueHandler = event => setSearchValue(event.target.value)
+
+const submitHandler = event =>{
+  event.preventDefault()
+  if(!searchValue) return
+  navigate(`/search/${searchValue.trim().split(' ').join('-')}`)
+}
+
 useEffect(()=>{
   if(open.notifications){
     updateNotification()
@@ -51,7 +62,6 @@ const scrollNotiHandler = event =>{
     fetchNextPage()
   }
 }
-
 
 const showController = (option,target) =>{
   setOpen(prev => {
@@ -105,10 +115,12 @@ return (
       </p>
 
       {/* Search bar */}
-      <div className={style.searchBar} >
-        <p className={style.searchButton}>Search</p>
-        <input type="text" />
-      </div>
+      <form className={style.searchBar} onSubmit={submitHandler}>
+        <button className={style.searchButton}>
+          Search
+        </button>
+        <input type="text" onChange={searchValueHandler} value={searchValue}/>
+      </form>
 
       {
         isSuccess && <>      

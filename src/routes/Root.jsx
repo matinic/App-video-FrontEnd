@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Nav from "./nav/Nav";
-import Videos from "./videos/Videos";
 import React from 'react'
 import { Snackbar } from "@mui/material";
 import { useSnackBar } from "../hooks/suztandHooks";
@@ -21,10 +20,6 @@ export default function Root() {
           onClose={setClose}
           message={message}
         />
-        {
-          pathname === "/" ?
-          <Videos/>:null
-        }
         <Outlet/>
         
       </>

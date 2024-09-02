@@ -1,11 +1,9 @@
-
 .container{
     position: absolute;
     margin-left: 50%;
     transform: translateX(-50%);
 }
 .allVideos {
-    padding-top: var(--padding-top);
     width: 100%;
     display: grid;
     grid-template-columns: repeat(4,300px);
@@ -24,6 +22,7 @@
     transform: translate(-50%);
     position: absolute;
 }
+
 
 @media (width <= 1300px){
     .allVideos{

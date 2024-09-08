@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, Divider, Stack, Typography } from '@mui/material'
-import ChannelCard from '../channelCard/channelCard'
+import ChannelCard from '../channelCard/ChannelCard'
 import { useFollowers } from '../../hooks/queryHooks';
 import { useLocation } from 'react-router-dom';
 import GenericModal from "../genericModal/GenericModal"

@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'
 import { useVideo } from '../../hooks/queryHooks'
 import style from "./Detail.module.css"
-import ChannelCard from '../channelCard/channelCard';
+import ChannelCard from "../channelCard/ChannelCard"
 import { useUser } from '../../hooks/queryHooks'
 import LikesBar from '../likesBar/LikesBar';
 import EditVideoButtons from '../editVideoButtons/editVideoButtons';
-import SouthIcon from '@mui/icons-material/South';
 
 export default function Detail() {
 

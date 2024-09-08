@@ -8,7 +8,7 @@ const myApi = axios.create({
 })
 
 myApi.interceptors.request.use(config => {
-    // console.log(chalk.bgBlue(config.url))
+    console.log(chalk.bgBlue(config.url))
     const relativeRoute = config.url.split('?')
     const isRequiredAuthRoute = whiteList.includes(relativeRoute[0])
     if(isRequiredAuthRoute){
@@ -23,7 +23,7 @@ myApi.interceptors.request.use(config => {
 
 myApi.interceptors.response.use(    
     response => {
-        // console.log(chalk.bgGreen.black(response.config.url))
+        console.log(chalk.bgGreen.black(response.config.url))
         return response
     }, 
     async error => {
@@ -32,7 +32,7 @@ myApi.interceptors.response.use(
         if (error.response.status === 403 && !originalRequest._retry) {
             originalRequest._retry = true
             try {
-                // // console.log(chalk.bgYellow.black('retrying'))
+                console.log(chalk.bgYellow.black('retrying'))
                 const response = await myApi('/refresh')
                 const accessToken = response?.data?.accessToken
                 localStorage.setItem('accessToken', accessToken)
@@ -44,7 +44,7 @@ myApi.interceptors.response.use(
                 window.location.href = "/signin"
             }
         }
-        return Promise.reject()
+        return Promise.reject(error)
     }
 )
 

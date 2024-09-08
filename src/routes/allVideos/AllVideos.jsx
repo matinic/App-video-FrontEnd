@@ -1,6 +1,6 @@
 import VideoCard from '../videoCard/VideoCard.jsx'
 import style from './AllVideos.module.css'
-import ChannelCard from "../channelCard/channelCard"
+import ChannelCard from "../channelCard/ChannelCard.jsx"
 
 const AllVideos = ({toRender,nextPage}) => {
 

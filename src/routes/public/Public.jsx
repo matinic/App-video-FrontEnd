@@ -13,8 +13,6 @@ export default function Home() {
     isSuccess:isAllSuccess
   } = useAllVideos(location.pathname)
 
-
-
   if(isAllSuccess) return (
     <div style={{paddingTop:"100px"}}>
         <AllVideos toRender={videosPublished} nextPage={videosPublishedNext} />

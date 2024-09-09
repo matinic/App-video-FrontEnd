@@ -6,7 +6,7 @@ import { useLogout, useUpdateNotification } from "../../hooks/mutationHooks"
 import { Portal } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Badge from '@mui/material/Badge';
-import ChannelCard from '../channelCard/channelCard'
+import ChannelCard from '../channelCard/ChannelCard'
 import LogoutIcon from '@mui/icons-material/Logout';
 import Notification from '../notification/Notification'
 

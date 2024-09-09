@@ -5,7 +5,7 @@ import style from "./Detail.module.css"
 import ChannelCard from "../channelCard/ChannelCard"
 import { useUser } from '../../hooks/queryHooks'
 import LikesBar from '../likesBar/LikesBar';
-import EditVideoButtons from '../editVideoButtons/editVideoButtons';
+import EditVideoButtons from '../editVideoButtons/EditVideoButtons';
 
 export default function Detail() {
 

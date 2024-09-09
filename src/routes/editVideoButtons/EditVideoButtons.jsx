@@ -1,6 +1,6 @@
 import React from 'react'
 import EditIcon from '@mui/icons-material/Edit';
-import style from "./editVideoButtons.module.css"
+import style from "./EditVideoButtons.module.css"
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteIcon from '@mui/icons-material/Delete';

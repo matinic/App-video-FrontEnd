@@ -1,10 +1,10 @@
-import React,{useState, useRef,useEffect } from 'react'
+import React,{ useRef,useEffect } from 'react'
 import style from "./Channel.module.css"
 import { useUser } from '../../hooks/queryHooks'
 import { useParams, Link, useNavigate, useLocation} from 'react-router-dom'
-import { useChannel, useLikedVideos, useSubscriptions, useFollowers } from '../../hooks/queryHooks'
+import { useChannel, useLikedVideos, useSubscriptions } from '../../hooks/queryHooks'
 import VideoCard from '../videoCard/VideoCard'
-import ChannelCard from "../channelCard/channelCard.jsx"
+import ChannelCard from "../channelCard/ChannelCard.jsx"
 import LikesBar from '../likesBar/LikesBar.jsx'
 
 export default function Channel() {

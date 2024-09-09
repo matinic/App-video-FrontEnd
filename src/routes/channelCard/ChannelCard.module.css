@@ -1,28 +1,28 @@
 .mainContainer{
     display: flex;
 }
-.profileImage img {
+:is(.profileImage img) {
     border-radius: 50%;
     height: 100%;
     width: 100%;
     flex-shrink: 0;
     object-fit: cover;
 }
-.nameContainer{
+:is(.nameContainer){
     display: flex;
     flex-flow: column;
     gap: 10px; 
-    h1{
+    :is(h1){
         margin: 0px;
         font-size: 2.5rem;
     }
-    p{
+    :is(p){
         margin: 0px;
         padding: 0px;
         color: white;
         font-style: italic; 
     }
-    button{
+    :is(button){
         width: max-content;
         text-align: center;
         background-color: black;
@@ -37,9 +37,9 @@
     color: lightgrey;
     cursor: pointer
 }
-[data-size="small"]{
+:is([data-size="small"]){
     gap: 10px;
-    .profileImage{
+    :is(.profileImage){
         flex-shrink: 0;
         position: relative;
         height: 40px;
@@ -48,23 +48,23 @@
             flex-shrink: 0;
         }
     }
-    .nameContainer{
+    :is(.nameContainer){
         gap: 0px;
         flex-grow: 1;
-        button{
+        :is(button){
             padding: 3px 15px;
             font-size: 0.7rem;
             margin-top: 10px;
         }
       
-            h1{
+            :is(h1){
                 margin: 0px;
                 padding: 0px;
                 font-size: 1rem;
                 font-weight:normal;
                 font-style: italic;
             }
-            p{
+            :is(p){
                 margin: 0px;
                 font-size: 0.8rem;
                 font-weight:normal;
@@ -73,58 +73,58 @@
         
     }
 }
-[data-size="large"]{
+:is([data-size="large"]){
     max-width: max-content;
     gap: 20px;
-    .profileImage{
+    :is(.profileImage){
         flex-shrink: 0;
         position: relative;
         height: 100px;
         width: 100px;
     }
-    .nameContainer{
+    :is(.nameContainer){
         flex-grow: 1;
-        div{
+        :is(div){
             display: flex;
             flex-direction: column;
-            h1{
+            :is(h1){
                 font-size: clamp(1rem,2rem,3.5rem);
                 max-width: 100%;
             }
         }
-        button{
+        :is(button){
             padding: 5px 25px;
             font-size: 0.8rem;
         }
     }
 }
-[data-size="row"]{
+:is([data-size="row"]){
     width: max-content;
     gap: 15px;
     justify-items:center ;
-    .profileImage{
+    :is(.profileImage){
         flex-shrink: 0;
         position: relative;
         height: 50px;
         width: 50px;
     }
-    .nameContainer{
+    :ia(.nameContainer){
         display: flex;
         flex-flow: row;
         align-items: center;
         gap: 15px;
-        div{
+        :is(div){
             display: flex;
             flex-direction: column;
             gap: 8px;
-            h1{
+            :is(h1){
                 margin: 0px;
                 padding: 0px;
                 font-size: 1.3rem;
                 line-height: 1.3rem;
                 font-weight:bold;
             }
-            p{
+            :is(p){
                 margin: 0px;
                 padding: 0px;
                 font-size: 0.8rem;
@@ -132,16 +132,16 @@
                 font-weight:normal;
             }
         }
-        button{
+        :is(button){
             height: max-content;
             padding: 8px 25px;
             margin-left: 20px
         }
     }
 }
-[data-navigate = "true"]{
+:is([data-navigate = "true"]){
     span:hover,
-    .nameContainer h1:hover{
+    :ia(.nameContainer h1:hover){
         cursor: pointer;
     }
 }
@@ -162,7 +162,7 @@
     pointer-events: none;
 }
 
-button[data-subscribed="true"]{
+:is(button[data-subscribed="true"]){
     background-color: gray;
     cursor: pointer
 }

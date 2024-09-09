@@ -10,7 +10,7 @@
     width: 400px;
     margin: auto;
 }
-.formBody button{
+.formBody :is(button){
     width: max-content;
     margin-left: 50%;
     transform: translate(-50%);

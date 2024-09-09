@@ -105,7 +105,7 @@ button[data-published="true"],
     overflow: hidden;
     border-radius: 50%;;
 }
-.profileImage img{
+.profileImage :is(img){
     height: 100%;
 }
 .edit{

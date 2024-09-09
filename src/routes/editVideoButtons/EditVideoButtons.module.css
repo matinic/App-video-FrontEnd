@@ -1,7 +1,7 @@
 .videoOptions{
     display: flex;
     gap: 5px;
-    button{
+    :is(button){
         width: 60px;
         padding: 5px;
         border-radius: 30px;
